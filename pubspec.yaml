@@ -41,7 +41,9 @@ dependencies:
   dio: ^5.4.3+1
   connectivity_plus: ^6.0.5
   intl:
-
+  image_picker: ^1.1.2
+  file_picker: ^8.1.7
+  video_player: ^2.9.2
 
 
 dev_dependencies:

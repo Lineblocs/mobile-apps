@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 
 import '../model/chat_user_list_model.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_font.dart';
+import 'chat/chat_screen.dart';
 
 class MessageScreen extends StatefulWidget {
   const MessageScreen({super.key});
@@ -88,37 +90,42 @@ class _MessageScreenState extends State<MessageScreen> {
                   itemCount: list.length,
                     itemBuilder: (context, index) {
                     var data = list[index];
-                 return  Card(
-                     child: Padding(
-                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                       child: Row(
-                         crossAxisAlignment: CrossAxisAlignment.center,
-                         children: [
-                            CircleAvatar(
-                              radius: 20,
-                              backgroundColor: AppColor.grey,
-                              child: Icon(Icons.person),
-                            ),
-                           Expanded(
-                             child: Column(
-                               children: [
-                                 ListTile(
-                                   title: Text(data.name?? "",
-                                       style: AppFonts.boldTextStyle(
-                                           fontSize: 15.0, color: AppColor.black)),
-                                   subtitle: Text(data.message?? "",
-                                       style: AppFonts.regularTextStyle(
-                                           fontSize: 12.0, color: AppColor.black)),
-                                 ),
-                               ],
+                 return  InkWell(
+                   onTap: (){
+                     Get.to(() => ChatScreen(user: data));
+                   },
+                   child: Card(
+                       child: Padding(
+                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                         child: Row(
+                           crossAxisAlignment: CrossAxisAlignment.center,
+                           children: [
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: AppColor.grey,
+                                child: Icon(Icons.person),
+                              ),
+                             Expanded(
+                               child: Column(
+                                 children: [
+                                   ListTile(
+                                     title: Text(data.name?? "",
+                                         style: AppFonts.boldTextStyle(
+                                             fontSize: 15.0, color: AppColor.black)),
+                                     subtitle: Text(data.message?? "",
+                                         style: AppFonts.regularTextStyle(
+                                             fontSize: 12.0, color: AppColor.black)),
+                                   ),
+                                 ],
+                               ),
                              ),
-                           ),
-                           Text(data.createdAt?? "",
-                               style: AppFonts.boldTextStyle(
-                                   fontSize: 15.0, color: AppColor.black))
-                         ],
-                       ),
-                     ));
+                             Text(data.createdAt?? "",
+                                 style: AppFonts.boldTextStyle(
+                                     fontSize: 15.0, color: AppColor.black))
+                           ],
+                         ),
+                       )),
+                 );
                 }),
               ),
             )),
