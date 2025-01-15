@@ -7,13 +7,14 @@ import '../utils/app_font.dart';
 import '../utils/assets_images.dart';
 
 
-Widget buildCircleButton(IconData icon, Color iconColor, Color bgColor,String text,{Color textColor = AppColor.white,double iconSize = 30.0,double ,textSize = 15.0}) {
+Widget buildCircleButton(IconData icon, Color iconColor, Color bgColor,String text,{BorderRadiusGeometry? borderRadius,Color textColor = AppColor.white,double iconSize = 30.0,double ,textSize = 15.0}) {
   return Column(
     children: [
       Container(
+        // height: 18.w,
         decoration: BoxDecoration(
           color: bgColor,
-          shape: BoxShape.circle,
+          borderRadius:borderRadius??BorderRadius.circular(0),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),

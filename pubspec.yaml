@@ -44,6 +44,9 @@ dependencies:
   image_picker: ^1.1.2
   file_picker: ^8.1.7
   video_player: ^2.9.2
+  permission_handler: ^11.3.1
+  contacts_service: ^0.6.3
+  azlistview: ^2.0.0
 
 
 dev_dependencies:

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:lineblocs/screen/auth/login_screen.dart';
+import 'package:lineblocs/screen/dashboard.dart';
 
 import '../utils/assets_images.dart';
 import '../utils/shared_preferences/preferences_key.dart';
@@ -33,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
             MaterialPageRoute(builder: (context) =>  LoginScreen()));
       } else {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) =>  OnboardingScreen()));
+            MaterialPageRoute(builder: (context) =>  DashboardScreen()));
       }
     });
   }

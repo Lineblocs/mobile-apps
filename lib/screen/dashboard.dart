@@ -25,7 +25,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<Widget> widgetList = [
     DialPadScreen(),
     SettingScreen(),
-    MessageScreen(),
+    ContactListScreen(),
+   // MessageScreen(),
     ProfileScreen()
   ];
 
@@ -47,9 +48,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 itemNavigationBar("Setting", Icons.settings, () {
                   controller.index.value = 1;
                 },iconColor: controller.index.value == 1 ? AppColor.white:AppColor.grey),
-                itemNavigationBar("Message", Icons.message_sharp, () {
+                itemNavigationBar("Contacts", Icons.group, () {
                   controller.index.value = 2;
                 },iconColor: controller.index.value == 2 ? AppColor.white:AppColor.grey),
+                // itemNavigationBar("Message", Icons.message_sharp, () {
+                //   controller.index.value = 2;
+                // },iconColor: controller.index.value == 2 ? AppColor.white:AppColor.grey),
                 itemNavigationBar("Profile", Icons.person, () {
                   controller.index.value = 3;
                 },iconColor: controller.index.value == 3 ? AppColor.white:AppColor.grey),

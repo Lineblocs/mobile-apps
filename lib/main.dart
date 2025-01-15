@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lineblocs/screen/auth/login_screen.dart';
-import 'package:lineblocs/screen/intro/intro_second_screen.dart';
 import 'package:lineblocs/screen/splash_screen.dart';
 import 'package:lineblocs/utils/app_colors.dart';
 import 'package:lineblocs/utils/shared_preferences/preferences_manager.dart';
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
     return Sizer(builder: (a, b, c) {
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        home: OnboardingScreen(),
+        home:  SplashScreen(),
       );
     });
   }

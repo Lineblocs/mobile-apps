@@ -42,6 +42,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           Expanded(
             child: PageView.builder(
+              
               controller: _pageController,
               onPageChanged: (index) {
                 setState(() {

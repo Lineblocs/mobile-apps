@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../model/login_respones_model.dart';
 import '../screen/call_screen.dart';
+import '../screen/intro/intro_second_screen.dart';
 import '../service/api_url.dart';
 import '../service/base_service.dart';
 import '../utils/shared_preferences/preferences_key.dart';
@@ -32,7 +33,7 @@ class AuthenticationController extends GetxController {
       print(response.data);
       baseService.showSuccessMessage(response,"Successfully login", true);
       PreferencesManager.setString(PreferencesKey.accessToken, response.data["token"]["auth"]);
-      Get.offAll(() => CallScreen());
+      Get.offAll(() => OnboardingScreen());
       isLoading.value = false;
     }else{
       baseService.showSuccessMessage(response,"Error", true);
