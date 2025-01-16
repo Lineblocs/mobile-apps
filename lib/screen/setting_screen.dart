@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 
 import '../controller/dashboard_controller.dart';
+import '../controller/theme_controller.dart';
 import '../service/show_app_message.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_font.dart';
@@ -21,141 +22,170 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   DashboardController controller = Get.find();
   final phoneController = TextEditingController();
+  final ThemeController themeController = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: AppColor.primaryColor,
-      statusBarIconBrightness: Brightness.dark,
-    ));
-    return Scaffold(
-        body: SafeArea(
-            child: Stack(
-              children: [
-                ListView(
-                  children: [
-                    Container(
-                      height: 15.w,
-                      width: double.infinity,
-                      color: AppColor.primaryColor,
-                      child: Center(
-                        child: Text(
-                          'Setting',
-                          style: AppFonts.boldTextStyle(
-                              fontSize: 20.0, color: AppColor.white),
-                        ),
-                      ),
-                    ),
-                    Obx((){
-                      return SwitchListTile(
-                        title: Text("Enable Two Factor Authentication"),
-                        value: controller.isTFA.value,
-                        activeColor: AppColor.primaryColor,
-                        inactiveThumbColor: AppColor.grey,
-                        hoverColor: AppColor.primaryColor,
-                        onChanged: (value) {
-                          controller.isTFA.value = value;
-                        },
-                      );
-                    }),
-                    Obx((){
-                      return  controller.isTFA.value ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            ListTile(
-                              title: const Text('SMS Verification'),
-                              leading: Radio<String>(
-                                value: 'sms',
-                                activeColor: AppColor.primaryColor,
-                                groupValue: controller.selectedAuthMethod.value,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    controller.selectedAuthMethod.value = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                            ListTile(
-                              title: const Text('Authentication App'),
-                              leading: Radio<String>(
-                                value: 'app',
-                                activeColor: AppColor.primaryColor,
-                                groupValue: controller.selectedAuthMethod.value,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    controller.selectedAuthMethod.value = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ) : Container();
-                    }),
-                    Obx((){
-                      return controller.isTFA.value ? controller.selectedAuthMethod.value == "sms" ?  Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: textFieldWidget(
-                            prefixIcon: Icons.phone_iphone,
-                            controller: phoneController,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter Phone number';
-                              }
-                              return null;
-                            }, labelText: 'Phone Number'),
-                      ) : Container(
-                          child: Padding(
-                            padding:  EdgeInsets.symmetric(horizontal: 4.w),
-                            child: Column(
-                              children: [
-                                Text(AppString().noteStr,style: AppFonts.regularTextStyle(fontSize: 4.w),),
-                                SizedBox(height: 4.w,),
-                                Text(AppString().scanQR,style: AppFonts.regularTextStyle(fontSize: 4.w),),
-                                Icon(Icons.qr_code_2_rounded,size: 60.w,)
-                              ],
-                            ),
-                          )
-                      ): Container();
-                    }),
-                    Obx((){
-                      return controller.isTFA.value ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w),
-                        child: InkWell(
-                          onTap: () {
-                            if(controller.selectedAuthMethod.value == "sms") {
-                              if (phoneController.text.isEmpty) {
-                                showSnackBars(context, 'Please enter phone number',Colors.red);
-                              } else {
-                              }
-                            }else{
-                            }
+    // SystemChrome.setSystemUIOverlayStyle(
+    //     SystemUiOverlayStyle(
+    //   statusBarColor: themeController.isDarkMode.value ? null :
+    //   AppColor.primaryColor,
+    //   statusBarIconBrightness: Brightness.dark,
+    // )
+    // );
+    return Obx(()=>
+       Scaffold(
+           appBar: AppBar(centerTitle: true,
+             title:Text(
+               'Setting',
+               style: AppFonts.boldTextStyle(
+                   fontSize: 20.0, color: themeController.isDarkMode.value ? AppColor.white :
+               AppColor.white),
+             ) ,
+             backgroundColor: themeController.isDarkMode.value ? null :
+       AppColor.primaryColor,),
+          body: SafeArea(
+              child: Stack(
+                children: [
+                  ListView(
+                    children: [
+                      // Container(
+                      //   height: 15.w,
+                      //   width: double.infinity,
+                      //   color:themeController.isDarkMode.value ? null :
+                      //   AppColor.primaryColor,
+                      //   child: Center(
+                      //     child: Text(
+                      //       'Setting',
+                      //       style: AppFonts.boldTextStyle(
+                      //           fontSize: 20.0, color: themeController.isDarkMode.value ? AppColor.white :
+                      //       AppColor.white),
+                      //     ),
+                      //   ),
+                      // ),
+                      Obx((){
+                        return SwitchListTile(
+                          title: Text("Enable Two Factor Authentication"),
+                          value: controller.isTFA.value,
+                          activeColor: AppColor.primaryColor,
+                          inactiveThumbColor: AppColor.grey,
+                          hoverColor: AppColor.primaryColor,
+                          onChanged: (value) {
+                            controller.isTFA.value = value;
                           },
-                          child: Container(
-                            height: 12.w,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: AppColor.primaryColor,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Submit',
-                                style: AppFonts.boldTextStyle(
-                                    fontSize: 5.w, color: AppColor.white),
+                        );
+                      }),
+                      Obx((){
+                        return  controller.isTFA.value ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: const Text('SMS Verification'),
+                                leading: Radio<String>(
+                                  value: 'sms',
+                                  activeColor: AppColor.primaryColor,
+                                  groupValue: controller.selectedAuthMethod.value,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      controller.selectedAuthMethod.value = value!;
+                                    });
+                                  },
+                                ),
+                              ),
+                              ListTile(
+                                title: const Text('Authentication App'),
+                                leading: Radio<String>(
+                                  value: 'app',
+                                  activeColor: AppColor.primaryColor,
+                                  groupValue: controller.selectedAuthMethod.value,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      controller.selectedAuthMethod.value = value!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ) : Container();
+                      }),
+                      Obx((){
+                        return controller.isTFA.value ? controller.selectedAuthMethod.value == "sms" ?  Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: textFieldWidget(
+                              prefixIcon: Icons.phone_iphone,
+                              controller: phoneController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter Phone number';
+                                }
+                                return null;
+                              }, labelText: 'Phone Number'),
+                        ) : Container(
+                            child: Padding(
+                              padding:  EdgeInsets.symmetric(horizontal: 4.w),
+                              child: Column(
+                                children: [
+                                  Text(AppString().noteStr,style: AppFonts.regularTextStyle(fontSize: 4.w),),
+                                  SizedBox(height: 4.w,),
+                                  Text(AppString().scanQR,style: AppFonts.regularTextStyle(fontSize: 4.w),),
+                                  Icon(Icons.qr_code_2_rounded,size: 60.w,)
+                                ],
+                              ),
+                            )
+                        ): Container();
+                      }),
+                      Obx((){
+                        return controller.isTFA.value ? Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5.w),
+                          child: InkWell(
+                            onTap: () {
+                              if(controller.selectedAuthMethod.value == "sms") {
+                                if (phoneController.text.isEmpty) {
+                                  showSnackBars(context, 'Please enter phone number',Colors.red);
+                                } else {
+                                }
+                              }else{
+                              }
+                            },
+                            child: Container(
+                              height: 12.w,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColor.primaryColor,
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Submit',
+                                  style: AppFonts.boldTextStyle(
+                                      fontSize: 5.w, color: AppColor.white),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ): Container();
-                    })
-                  ],
-                ),
-                Obx(() => controller.isLoading.value
-                    ? Center(child: CircularProgressIndicator())
-                    : Container()),
-              ],
-            )));
+                        ): Container();
+                      }),
+                      Obx(() {
+                        return SwitchListTile(
+                          title: Text("Dark Mode"),
+                          value: themeController.isDarkMode.value,
+                          activeColor: AppColor.primaryColor,
+                          inactiveThumbColor: AppColor.grey,
+                          hoverColor: AppColor.primaryColor,
+                          onChanged: (value) {
+                            themeController.toggleTheme();
+                          },
+                        );
+                      }),
+                    ],
+                  ),
+                  // Obx(() => controller.isLoading.value
+                  //     ? Center(child: CircularProgressIndicator())
+                  //     : Container()),
+                ],
+              ))),
+    );
   }
 }

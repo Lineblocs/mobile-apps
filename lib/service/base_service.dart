@@ -90,7 +90,9 @@ class BaseService {
     if (ex.response != null) {
       PrintAPINameAndResponse.printAPIErrorResponse(apiUrl: url, response: ex.response!);
       if (isShowMessage) {
+
         ShowAppMessage.showMessage(
+
           ex.response?.data['exceptionMessage'] ?? 'Error occurred',
           ex.response?.data['status'],
           snackBarType: SnackBarType.error,

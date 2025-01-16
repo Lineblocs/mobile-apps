@@ -9,7 +9,7 @@ class AppFonts {
 
   static TextStyle regularTextStyle(
       {fontSize = AppDimens.default_font,
-        color = AppColor.black,
+        color ,
         font = assistant,
         height = 1.0}) =>
       TextStyle(
@@ -22,7 +22,8 @@ class AppFonts {
 
   static TextStyle mediumTextStyle(
       {fontSize = AppDimens.default_font,
-        color = AppColor.black,
+        // color = AppColor.black,
+        color,
         font = assistant,
         height = 1.0}) =>
       TextStyle(
@@ -35,7 +36,8 @@ class AppFonts {
 
   static boldTextStyle(
       {fontSize = AppDimens.default_font,
-        color = AppColor.black,
+      //  color = AppColor.black
+        color,
         font = assistant,
         height = 1.0,
         fontWeight = FontWeight.w700}) =>
@@ -49,7 +51,8 @@ class AppFonts {
 
   static semiBoldTextStyle(
       {fontSize = AppDimens.default_font,
-        color = AppColor.black,
+      //  color = AppColor.black,
+        color,
         font = assistant,
         height = 1.0,
         fontWeight = FontWeight.w600}) =>

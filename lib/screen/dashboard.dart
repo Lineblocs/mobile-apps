@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lineblocs/screen/call_screen.dart';
+import 'package:lineblocs/controller/theme_controller.dart';
 import 'package:lineblocs/screen/profile_screen.dart';
 import 'package:lineblocs/screen/setting_screen.dart';
 import 'package:lineblocs/utils/app_colors.dart';
 import 'package:lineblocs/utils/app_font.dart';
 import 'package:sizer/sizer.dart';
-
 import '../controller/dashboard_controller.dart';
+import 'contact_screen.dart';
 import 'dial_pad_screen.dart';
 import 'message_screen.dart';
 
@@ -20,8 +20,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   DashboardController controller = Get.put(DashboardController());
-
-
+  final ThemeController themeController = Get.put(ThemeController());
   List<Widget> widgetList = [
     DialPadScreen(),
     SettingScreen(),
@@ -33,11 +32,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColor.white,
+     //   backgroundColor: AppColor.white,
         bottomNavigationBar: Container(
           height: 15.w,
           width: double.infinity,
-          color: AppColor.primaryColor,
+          color:themeController.isDarkMode.value ? null : AppColor.primaryColor
+       ,
           child: Obx(()=>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

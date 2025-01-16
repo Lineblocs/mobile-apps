@@ -3,4 +3,5 @@ class PreferencesKey {
   static String userData = "userData";
   static String languageCode = "languageCode";
   static String createLoginByEmailCode = "createLoginByEmailCode";
+  static String isDarkMode = "isDarkMode";
 }

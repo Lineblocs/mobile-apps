@@ -14,7 +14,7 @@ Widget buildCircleButton(IconData icon, Color iconColor, Color bgColor,String te
         // height: 18.w,
         decoration: BoxDecoration(
           color: bgColor,
-          borderRadius:borderRadius??BorderRadius.circular(0),
+          borderRadius:borderRadius??BorderRadius.circular(8),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),

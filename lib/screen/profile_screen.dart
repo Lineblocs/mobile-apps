@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lineblocs/utils/app_font.dart';
 import 'package:sizer/sizer.dart';
 
 import '../controller/dashboard_controller.dart';
+import '../controller/theme_controller.dart';
 import '../utils/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   DashboardController controller = Get.find();
+  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   void initState() {
@@ -25,67 +28,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColor.primaryColor,
-        body: SafeArea(
-          child: Stack(
-                  children: [
-                    Column(
-                      children: [
-          Container(
-            height: 15.w,
-            width: double.infinity,
-            color: AppColor.primaryColor,
-            child: Center(
-              child: Text(
-                'Profile',
-                style: AppFonts.boldTextStyle(
-                    fontSize: 20.0, color: AppColor.white),
-              ),
-            ),
-          ),
-          Obx(() => Expanded(
-                  child: Container(
-                    color: AppColor.white,
-                    child: ListView(children: [
-                                    ListTile(
-                    title: Text('Name',
-                        style: AppFonts.boldTextStyle(
-                            fontSize: 15.0, color: AppColor.black)),
-                    subtitle: Text(controller.user.value.name ?? "",
-                        style: AppFonts.regularTextStyle(
-                            fontSize: 12.0, color: AppColor.black)),
-                                    ),
-                                    ListTile(
-                      title: Text('Email',
+    // SystemChrome.setSystemUIOverlayStyle(
+    //     SystemUiOverlayStyle(
+    //       statusBarColor: themeController.isDarkMode.value ? null :
+    //       AppColor.primaryColor,
+    //       statusBarIconBrightness: Brightness.dark,
+    //     )
+    // );
+    return Obx(
+      ()=> Scaffold(appBar: AppBar(centerTitle: true,backgroundColor: themeController.isDarkMode.value ? null :AppColor.primaryColor,
+        title: Text(
+        'Profile',
+        style: AppFonts.boldTextStyle(
+            fontSize: 20.0,
+            color:
+            AppColor.white),
+      ),),
+          body: SafeArea(
+            child: Stack(
+                    children: [
+                      Column(
+                        children: [
+            // Container(
+            //   height: 15.w,
+            //   width: double.infinity,
+            //   color: themeController.isDarkMode.value ? null :
+            //   AppColor.primaryColor,
+            //   child: Center(
+            //     child: Text(
+            //       'Profile',
+            //       style: AppFonts.boldTextStyle(
+            //           fontSize: 20.0,
+            //           color:
+            //           AppColor.white),
+            //     ),
+            //   ),
+            // ),
+            Obx(() => Expanded(
+                    child: Container(
+                      child: ListView(children: [
+                                      ListTile(
+                      title: Text('Name',
                           style: AppFonts.boldTextStyle(
-                              fontSize: 15.0, color: AppColor.black)),
-                      subtitle: Text(controller.user.value.email ?? "",
+                              fontSize: 15.0, )),
+                      subtitle: Text(controller.user.value.name ?? "",
                           style: AppFonts.regularTextStyle(
-                              fontSize: 12.0, color: AppColor.black))),
-                                    ListTile(
-                          title: Text('Plan',
-                              style: AppFonts.boldTextStyle(
-                                  fontSize: 15.0, color: AppColor.black)),
-                          subtitle: Text(controller.user.value.plan ?? "",
-                              style: AppFonts.regularTextStyle(
-                                  fontSize: 12.0, color: AppColor.black))),
-                      ListTile(
-                          title: Text('Billing package',
-                              style: AppFonts.boldTextStyle(
-                                  fontSize: 15.0, color: AppColor.black)),
-                          subtitle: Text(controller.user.value.billingPackage ?? "",
-                              style: AppFonts.regularTextStyle(
-                                  fontSize: 12.0, color: AppColor.black)))
-                                  ]),
-                  )))
-                      ],
-                    ),
-                    Obx(() => controller.isLoading.value
-          ? Center(child: CircularProgressIndicator())
-          : Container()),
-                  ],
-                ),
-        ));
+                              fontSize: 12.0, )),
+                                      ),
+                                      ListTile(
+                        title: Text('Email',
+                            style: AppFonts.boldTextStyle(
+                                fontSize: 15.0)),
+                        subtitle: Text(controller.user.value.email ?? "",
+                            style: AppFonts.regularTextStyle(
+                                fontSize: 12.0, ))),
+                                      ListTile(
+                            title: Text('Plan',
+                                style: AppFonts.boldTextStyle(
+                                    fontSize: 15.0,)),
+                            subtitle: Text(controller.user.value.plan ?? "",
+                                style: AppFonts.regularTextStyle(
+                                    fontSize: 12.0, ))),
+                        ListTile(
+                            title: Text('Billing package',
+                                style: AppFonts.boldTextStyle(
+                                    fontSize: 15.0,)),
+                            subtitle: Text(controller.user.value.billingPackage ?? "",
+                                style: AppFonts.regularTextStyle(
+                                    fontSize: 12.0, )))
+                                    ]),
+                    )))
+                        ],
+                      ),
+                      Obx(() => controller.isLoading.value
+            ? Center(child: CircularProgressIndicator())
+            : Container()),
+                    ],
+                  ),
+          )),
+    );
   }
 }
