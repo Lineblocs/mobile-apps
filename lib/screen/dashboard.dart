@@ -7,6 +7,7 @@ import 'package:lineblocs/utils/app_colors.dart';
 import 'package:lineblocs/utils/app_font.dart';
 import 'package:sizer/sizer.dart';
 import '../controller/dashboard_controller.dart';
+import 'call_history_screen.dart';
 import 'contact_screen.dart';
 import 'dial_pad_screen.dart';
 import 'message_screen.dart';
@@ -25,7 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     DialPadScreen(),
     SettingScreen(),
     ContactListScreen(),
-   // MessageScreen(),
+    CallHistoryScreen(),
     ProfileScreen()
   ];
 
@@ -51,12 +52,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 itemNavigationBar("Contacts", Icons.group, () {
                   controller.index.value = 2;
                 },iconColor: controller.index.value == 2 ? AppColor.white:AppColor.grey),
-                // itemNavigationBar("Message", Icons.message_sharp, () {
-                //   controller.index.value = 2;
-                // },iconColor: controller.index.value == 2 ? AppColor.white:AppColor.grey),
-                itemNavigationBar("Profile", Icons.person, () {
+                itemNavigationBar("Call History", Icons.call, () {
                   controller.index.value = 3;
                 },iconColor: controller.index.value == 3 ? AppColor.white:AppColor.grey),
+                itemNavigationBar("Profile", Icons.person, () {
+                  controller.index.value = 4;
+                },iconColor: controller.index.value == 4 ? AppColor.white:AppColor.grey),
               ],
             )
           ),

@@ -26,13 +26,13 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(
-    //     SystemUiOverlayStyle(
-    //   statusBarColor: themeController.isDarkMode.value ? null :
-    //   AppColor.primaryColor,
-    //   statusBarIconBrightness: Brightness.dark,
-    // )
-    // );
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(
+      statusBarColor: themeController.isDarkMode.value ? null :
+      AppColor.primaryColor,
+      statusBarIconBrightness: Brightness.dark,
+    )
+    );
     return Obx(()=>
        Scaffold(
            appBar: AppBar(centerTitle: true,

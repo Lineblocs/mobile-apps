@@ -17,6 +17,7 @@ class BaseService {
       headers: {
         "Content-Type": "application/json",
         "authorization": "Bearer $token",
+        'X-Workspace-ID': '306'
       },
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
@@ -34,7 +35,16 @@ class BaseService {
     return dio;
   }
 
-  Future<Response> get(String url, {Map<String, dynamic>? queryParameters, bool isShowMessage = true}) async {
+  Future<Response> get(String url,{bool isShowMessage = true}) async {
+    final dio = getDio();
+    try {
+      final response = await dio.get(url);
+      return response;
+    } on DioException catch (ex) {
+      return _handleError(ex, url, isShowMessage);
+    }
+  }
+  Future<Response> getParameters(String url, {Map<String, dynamic>? queryParameters, bool isShowMessage = true}) async {
     final dio = getDio();
     try {
       final response = await dio.get(url, queryParameters: queryParameters);

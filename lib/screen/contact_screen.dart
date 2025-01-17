@@ -106,6 +106,7 @@ import 'package:sizer/sizer.dart';
 import '../controller/theme_controller.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_font.dart';
+import '../widget/comman_widget.dart';
 import 'contact_details_screen.dart';
 
 class ContactListScreen extends StatefulWidget {
@@ -116,7 +117,7 @@ class ContactListScreen extends StatefulWidget {
 class _ContactListScreenState extends State<ContactListScreen> {
   List<Contact> contacts = [];
   final ItemScrollController _scrollController = ItemScrollController();
-  final ThemeController themeController = Get.put(ThemeController());
+ final ThemeController  themeController = Get.find();
 
   @override
   void initState() {
@@ -187,83 +188,86 @@ class _ContactListScreenState extends State<ContactListScreen> {
         ],
       ),
       body: contacts.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : Row(
-              children: [
-                Expanded(
-                  child: ScrollablePositionedList.builder(
-                    itemCount: contacts.length,
-                    itemScrollController: _scrollController,
-                    itemBuilder: (context, index) {
-                      var contact = contacts[index];
-                      Set<String> uniquePhoneNumbers = contact.phones!
-                          .map((phone) => phone.value ?? "")
-                          .where((name) => name.isNotEmpty)
-                          .toSet()
-                          .toSet();
-                      List<String> phoneNumbers = uniquePhoneNumbers.toList();
-                      return InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ContatctDetailsScreen(
-                                userName: contact.displayName ?? "No Name",
-                                phoneNumbers: phoneNumbers,
+          ?  Center(child:  commonLoading())
+          : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+            child: Row(
+                children: [
+                  Expanded(
+                    child: ScrollablePositionedList.builder(
+                      itemCount: contacts.length,
+                      itemScrollController: _scrollController,
+                      itemBuilder: (context, index) {
+                        var contact = contacts[index];
+                        Set<String> uniquePhoneNumbers = contact.phones!
+                            .map((phone) => phone.value ?? "")
+                            .where((name) => name.isNotEmpty)
+                            .toSet()
+                            .toSet();
+                        List<String> phoneNumbers = uniquePhoneNumbers.toList();
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ContatctDetailsScreen(
+                                  userName: contact.displayName ?? "No Name",
+                                  phoneNumbers: phoneNumbers,
+                                ),
                               ),
+                            );
+                          },
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              child: Text(contact.initials()),
                             ),
-                          );
-                        },
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            child: Text(contact.initials()),
+                            title: Text(contact.displayName ?? 'No Name',
+                                style: AppFonts.boldTextStyle(
+                                    fontSize: 4.w,
+                                    color: themeController.isDarkMode.value
+                                        ? AppColor.white
+                                        : AppColor.primaryColor)),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: phoneNumbers
+                                  .map((number) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4),
+                                        child: Text(number,
+                                            style: AppFonts.regularTextStyle(
+                                              fontSize: 3.w,
+                                              // color: AppColor.black
+                                            )),
+                                      ))
+                                  .toList(),
+                            ),
                           ),
-                          title: Text(contact.displayName ?? 'No Name',
-                              style: AppFonts.boldTextStyle(
-                                  fontSize: 4.w,
-                                  color: themeController.isDarkMode.value
-                                      ? AppColor.white
-                                      : AppColor.primaryColor)),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: phoneNumbers
-                                .map((number) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 2.5),
-                                      child: Text(number,
-                                          style: AppFonts.regularTextStyle(
-                                            fontSize: 3.w,
-                                            // color: AppColor.black
-                                          )),
-                                    ))
-                                .toList(),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    alphabet.length,
-                    (index) => InkWell(
-                      onTap: () => _scrollToLetter(alphabet[index]),
-                      child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 2, horizontal: 13),
-                          child: Text(
-                            alphabet[index],
-                            style: AppFonts.boldTextStyle(
-                                fontSize: 4.5.w,
-                                color: themeController.isDarkMode.value
-                                    ? AppColor.white
-                                    : AppColor.primaryColor),
-                          )),
+                        );
+                      },
                     ),
                   ),
-                ),
-              ],
-            ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      alphabet.length,
+                      (index) => InkWell(
+                        onTap: () => _scrollToLetter(alphabet[index]),
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 3, horizontal: 13),
+                            child: Text(
+                              alphabet[index],
+                              style: AppFonts.boldTextStyle(
+                                  fontSize: 4.5.w,
+                                  color: themeController.isDarkMode.value
+                                      ? AppColor.white
+                                      : AppColor.primaryColor),
+                            )),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+          ),
     );
   }
 }

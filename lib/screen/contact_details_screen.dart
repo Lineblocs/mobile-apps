@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lineblocs/utils/app_font.dart';
 import 'package:sizer/sizer.dart';
 
+import '../controller/theme_controller.dart';
 import '../utils/app_colors.dart';
 
 class ContatctDetailsScreen extends StatelessWidget {
+
   final String userName;
   final List<String> phoneNumbers;
 
@@ -16,12 +19,13 @@ class ContatctDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeController  themeController = Get.find();
     return Scaffold(
       appBar: AppBar(
-         // backgroundColor: AppColor.primaryColor,
+          backgroundColor: themeController.isDarkMode.value ? null :AppColor.primaryColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back,
-            //  color: Colors.white,
+              color: Colors.white,
             ),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -30,7 +34,7 @@ class ContatctDetailsScreen extends StatelessWidget {
             'Contact Details',
             style:
                 AppFonts.boldTextStyle(fontSize: 20.0,
-                   // color: AppColor.white
+                    color: AppColor.white
                 ),
           )),
       body: SingleChildScrollView(
@@ -39,17 +43,17 @@ class ContatctDetailsScreen extends StatelessWidget {
             children: [
                SizedBox(height: 10.w),
               // Profile Section
-              const CircleAvatar(
+              CircleAvatar(
                   radius: 50,
-               //   backgroundColor: AppColor.primaryColor,
-                  child: Icon(Icons.person, size: 60,
-                 //   color: Colors.white,
+                  backgroundColor:  themeController.isDarkMode.value ? null :AppColor.primaryColor,
+                  child: const Icon(Icons.person, size: 60,
+                    color: Colors.white,
                     )),
                SizedBox(height: 10.w),
               Text(userName,
                   style: AppFonts.boldTextStyle(
                     fontSize: 25.0,
-                    //  color: AppColor.primaryColor
+                      color:  themeController.isDarkMode.value ? null :AppColor.primaryColor
                   )
               ),
               SizedBox(height: 10.w),
@@ -72,7 +76,7 @@ class ContatctDetailsScreen extends StatelessWidget {
                     leading: const Icon(Icons.phone),
                     title: Text(number,style: AppFonts.mediumTextStyle(
                         fontSize: 15.0,
-                       // color: AppColor.primaryColor
+                        color: themeController.isDarkMode.value ? AppColor.white :AppColor.primaryColor
                     )),
                     onTap: () => print("Tapped $number"), // Example action
                   )),

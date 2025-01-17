@@ -7,4 +7,6 @@ class ApiUrl {
 
   static String loginApi = baseUrl + '/jwt/authenticate';
   static String selfApi = baseUrl + '/self';
+  static String callHistoryApi = baseUrl + '/call/list?extension=';
+  static String noteApi = baseUrl + '/call/';
 }

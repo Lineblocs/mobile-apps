@@ -7,6 +7,7 @@ import 'package:sizer/sizer.dart';
 import '../controller/dashboard_controller.dart';
 import '../controller/theme_controller.dart';
 import '../utils/app_colors.dart';
+import '../widget/comman_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,7 +18,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   DashboardController controller = Get.find();
-  final ThemeController themeController = Get.put(ThemeController());
+  final ThemeController  themeController = Get.find();
 
   @override
   void initState() {
@@ -36,7 +37,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //     )
     // );
     return Obx(
-      ()=> Scaffold(appBar: AppBar(centerTitle: true,backgroundColor: themeController.isDarkMode.value ? null :AppColor.primaryColor,
+      ()=> Scaffold(appBar: AppBar(centerTitle: true,
+        backgroundColor: themeController.isDarkMode.value ? null :AppColor.primaryColor,
         title: Text(
         'Profile',
         style: AppFonts.boldTextStyle(
@@ -73,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               fontSize: 15.0, )),
                       subtitle: Text(controller.user.value.name ?? "",
                           style: AppFonts.regularTextStyle(
-                              fontSize: 12.0, )),
+                              fontSize: 14.0, )),
                                       ),
                                       ListTile(
                         title: Text('Email',
@@ -81,27 +83,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 15.0)),
                         subtitle: Text(controller.user.value.email ?? "",
                             style: AppFonts.regularTextStyle(
-                                fontSize: 12.0, ))),
+                                fontSize: 14.0, ))),
                                       ListTile(
                             title: Text('Plan',
                                 style: AppFonts.boldTextStyle(
                                     fontSize: 15.0,)),
                             subtitle: Text(controller.user.value.plan ?? "",
                                 style: AppFonts.regularTextStyle(
-                                    fontSize: 12.0, ))),
+                                    fontSize: 14.0, ))),
                         ListTile(
                             title: Text('Billing package',
                                 style: AppFonts.boldTextStyle(
                                     fontSize: 15.0,)),
                             subtitle: Text(controller.user.value.billingPackage ?? "",
                                 style: AppFonts.regularTextStyle(
-                                    fontSize: 12.0, )))
+                                    fontSize: 14.0, )))
                                     ]),
                     )))
                         ],
                       ),
                       Obx(() => controller.isLoading.value
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child:  commonLoading())
             : Container()),
                     ],
                   ),

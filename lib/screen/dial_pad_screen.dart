@@ -546,7 +546,7 @@ class DialPadScreen extends StatefulWidget {
 class _DialPadScreenState extends State<DialPadScreen> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode(); // Added FocusNode
-  final ThemeController themeController = Get.put(ThemeController());
+  ThemeController  themeController = Get.find();
 
   @override
   void initState() {
@@ -647,7 +647,7 @@ class _DialPadScreenState extends State<DialPadScreen> {
                   } else {
                     value = '#';
                   }
-                  return GestureDetector(
+                  return InkWell(
                     onTap: () => _onPressed(value),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
