@@ -244,63 +244,40 @@ Widget otpTextFieldWidget({
 Widget addressTextField(
     {required String label,
     required TextEditingController controller,
-    required String icon,
-    required FocusNode focusNode,
+    required IconData icon,
     Function()? onTap,
     Function()? onTapIcon,
     Function()? onTapSave,
-    required bool isFocus,
-    required ValueChanged<String>? onChanged,
-    required ValueChanged<String>? onSubmitted,
+    Color iconColor = AppColor.textColor2,
+    Color textColor = AppColor.textColor2,
     required int maxLines}) {
   return Padding(
     padding: EdgeInsets.only(top: 2.w),
     child: TextField(
-      readOnly: isFocus ? false : true,
       controller: controller,
-      style: AppFonts.boldTextStyle(color: AppColor.textColor2, fontSize: 16.0),
+      style: AppFonts.boldTextStyle(color: textColor, fontSize: 16.0),
       maxLines: maxLines,
-      focusNode: focusNode,
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
       onTap: onTap,
       decoration: InputDecoration(
-        labelText: label,
-        labelStyle: AppFonts.semiBoldTextStyle(
+        hintText: label,
+        hintStyle: AppFonts.regularTextStyle(
             color: AppColor.textColor, fontSize: 14.0),
         prefixIcon: Container(
-            height: 22.w,
+            height: 45.w,
             width: 10.w,
             alignment: Alignment.topLeft,
             child: Padding(
               padding: EdgeInsets.only(left: 4.w, right: 3.w, bottom: 4.w),
-              child: Image.asset(
+              child: Icon(
                 icon,
-                fit: BoxFit.cover,
+                color: iconColor,
               ),
             )),
-        suffixIcon:  InkWell(
-                onTap: onTapSave,
-                child: Padding(
-                  padding: EdgeInsets.only(right: 8.w, bottom: 4.w, left: 4.w),
-                  child: SizedBox(
-                    height: 15.w,
-                    child: Text(
-                      "Save",
-                      style: AppFonts.semiBoldTextStyle(
-                          color: AppColor.primaryColor, fontSize: 16.0),
-                    ),
-                  ),
-                ),
-              )
-            ,
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        hintStyle: AppFonts.regularTextStyle(
-            color: AppColor.textColor, fontSize: 14.0),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: AppColor.primaryColor, width: 2.0),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColor.primaryColor, width: 1.0),
         ),
-        enabledBorder: UnderlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColor.grey2),
         ),
       ),
@@ -378,11 +355,13 @@ Widget textFieldWidget({
   bool isEmailIcon = false,
   bool isFocusNode = false,
   final FocusNode? focusNode,
+  int maxLines = 1,
 }) {
   return  TextFormField(
     controller: controller,
-    keyboardType: TextInputType.text,
+    keyboardType: textInputType == TextInputType.text ? TextInputType.multiline : textInputType,
     obscureText: isPassword,
+    maxLines: maxLines,
     decoration: InputDecoration(
       hintText: labelText,
       hintStyle: AppFonts.regularTextStyle(

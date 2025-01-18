@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controller/theme_controller.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_font.dart';
 import '../widget/comman_widget.dart';
@@ -13,8 +15,10 @@ class CallReceiveScreen extends StatefulWidget {
 class _CallReceiveScreenState extends State<CallReceiveScreen> {
   @override
   Widget build(BuildContext context) {
+    ThemeController  themeController = Get.find();
     return Scaffold(
-      backgroundColor: AppColor.primaryColor,
+      backgroundColor: themeController.isDarkMode.value ? null :
+      AppColor.primaryColor,
       body: SafeArea(
         child: Column(
           children: [

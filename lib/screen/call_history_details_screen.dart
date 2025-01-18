@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -23,6 +24,10 @@ class CallHistoryDetailsScreen extends StatefulWidget {
 class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
   final noteController = TextEditingController();
   DashboardController controller = Get.find();
+  final AudioPlayer audioPlayer = AudioPlayer();
+  Duration _totalDuration = Duration.zero;
+  Duration _currentDuration = Duration.zero;
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -33,8 +38,40 @@ class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.getCallRecoder(widget.callHistory.apiId?? "");
     });
+
+    audioPlayer.onDurationChanged.listen((Duration duration) {
+      setState(() {
+        _totalDuration = duration;
+      });
+    });
+    audioPlayer.onPositionChanged.listen((Duration duration) {
+      setState(() {
+        _currentDuration = duration;
+        if (_currentDuration.inSeconds == _totalDuration.inSeconds) {
+          setState(() {
+            isPlaying = false;
+          });
+        }
+      });
+    });
   }
 
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
+  Future<void> toggleAudio(String url) async {
+    if (isPlaying) {
+      await audioPlayer.pause();
+    } else {
+      await audioPlayer.play(UrlSource(url));
+    }
+    setState(() {
+      isPlaying = !isPlaying;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.find();
@@ -93,7 +130,7 @@ class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
                             color: themeController.isDarkMode.value
                                 ? null
                                 : AppColor.primaryColor)),
-                    SizedBox(height: 10.w),
+                    SizedBox(height: 5.w),
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: const BoxDecoration(),
@@ -101,10 +138,6 @@ class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           actionButton(Icons.call, "Call", AppColor.green),
-                          // actionButton(Icons.message, "Text", AppColor.yellow4),
-                          // actionButton(Icons.video_call, "Video", AppColor.blue),
-                          actionButton(
-                              Icons.record_voice_over, "Record", AppColor.red),
                         ],
                       ),
                     ),
@@ -132,17 +165,78 @@ class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
                         ],
                       ),
                     ),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // Icon(
+                                //   Icons.mic,
+                                //   color: AppColor.primaryColor,
+                                // ),
+                                // SizedBox(width: 10),
+                                InkWell(
+                                  onTap: () {
+                                    toggleAudio("https://onlinetestcase.com/wp-content/uploads/2023/06/500-KB-MP3.mp3");
+                                  },
+                                  child: Icon(
+                                    isPlaying ? Icons.pause : Icons.play_arrow,
+                                    color:themeController.isDarkMode.value ?  AppColor.white : AppColor.primaryColor,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Slider(
+                                        activeColor: themeController.isDarkMode.value ?  AppColor.white : AppColor.primaryColor,
+                                        value: _currentDuration.inSeconds.toDouble(),
+                                        max: _totalDuration.inSeconds.toDouble(),
+                                        onChanged: (double value) {
+                                          setState(() {
+                                            audioPlayer.seek(Duration(seconds: value.toInt()));
+                                          });
+                                        },
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _currentDuration.toString().split('.').first,
+                                    style: AppFonts.regularTextStyle(fontSize: 8.sp, color: themeController.isDarkMode.value ?  AppColor.white : AppColor.primaryColor),
+                                  ),
+                                  Text(
+                                    _totalDuration.toString().split('.').first,
+                                    style: AppFonts.regularTextStyle(fontSize: 8.sp, color:themeController.isDarkMode.value ?  AppColor.white : AppColor.primaryColor),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: textFieldWidget(
-                          prefixIcon: Icons.note_add,
+                      child: addressTextField(
+                          iconColor: themeController.isDarkMode.value ?  AppColor.white : AppColor.primaryColor,
+                          textColor: themeController.isDarkMode.value ?  AppColor.white : AppColor.primaryColor,
                           controller: noteController,
-                          validator: (value) {
-                            return null;
-                          },
-                          labelText: 'Note'),
+                          maxLines: 10,
+                          label: 'Note', icon: Icons.note_add),
                     ),
-                    SizedBox(height: 20.w),
+                    SizedBox(height: 5.w),
                     InkWell(
                       onTap: () {
                         widget.callHistory.notes = noteController.text;
@@ -166,6 +260,8 @@ class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
                         ),
                       ),
                     ),
+
+
                   ],
                 ),
                 Obx(() => controller.isLoading.value ? commonLoading() : SizedBox())
