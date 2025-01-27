@@ -9,7 +9,6 @@ import '../utils/app_font.dart';
 import 'call_history_details_screen.dart';
 
 class CallHistoryScreen extends StatefulWidget {
-  const CallHistoryScreen({super.key});
 
   @override
   State<CallHistoryScreen> createState() => _CallHistoryScreenState();

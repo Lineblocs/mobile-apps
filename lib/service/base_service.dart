@@ -41,6 +41,8 @@ class BaseService {
       final response = await dio.get(url);
       return response;
     } on DioException catch (ex) {
+      print(ex.response?.statusCode);
+      print(ex.response?.data);
       return _handleError(ex, url, isShowMessage);
     }
   }
@@ -102,7 +104,6 @@ class BaseService {
       if (isShowMessage) {
 
         ShowAppMessage.showMessage(
-
           ex.response?.data['exceptionMessage'] ?? 'Error occurred',
           ex.response?.data['status'],
           snackBarType: SnackBarType.error,

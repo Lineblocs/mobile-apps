@@ -13,7 +13,6 @@ import '../utils/app_string.dart';
 import '../widget/comman_widget.dart';
 
 class SettingScreen extends StatefulWidget {
-  const SettingScreen({super.key});
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();

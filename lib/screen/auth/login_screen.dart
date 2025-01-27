@@ -67,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             isPassword: true,
                             controller: passwordController,
                             textInputType: TextInputType.text,
+                            // textInputAction: TextInputAction.done,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please enter password';

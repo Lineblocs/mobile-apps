@@ -285,16 +285,23 @@
 //   }
 // }
 
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart' as webrtc;
 import 'package:get/get.dart';
 import 'package:lineblocs/utils/assets_images.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:sip_ua/sip_ua.dart';
 import 'package:sizer/sizer.dart';
 
+import '../controller/dashboard_controller.dart';
 import '../controller/theme_controller.dart';
+import '../service/base_service.dart';
+import '../service/show_app_message.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_font.dart';
 import 'call_screen.dart';
+import 'callscreen.dart';
 
 class DialPadScreen extends StatefulWidget {
   @override
@@ -543,19 +550,25 @@ class DialPadScreen extends StatefulWidget {
 //   }
 // }
 
-class _DialPadScreenState extends State<DialPadScreen> {
+class _DialPadScreenState extends State<DialPadScreen>
+    implements SipUaHelperListener {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode(); // Added FocusNode
-  ThemeController  themeController = Get.find();
+  ThemeController themeController = Get.find();
+  DashboardController controller = Get.find();
 
+  late RegistrationState _registerState;
+  BaseService baseService = BaseService();
   @override
   void initState() {
     super.initState();
-    _focusNode.requestFocus(); // Ensure the cursor is displayed
+    _registerState = controller.helper.registerState;
+    _focusNode.requestFocus();
     _controller.addListener(() {
-      // Update state whenever the text changes
       setState(() {});
     });
+    controller.helper.addSipUaHelperListener(this);
+    controller.getGetSipCredentials(context);
   }
 
   @override
@@ -570,10 +583,6 @@ class _DialPadScreenState extends State<DialPadScreen> {
       _controller.text += value;
       _focusNode.requestFocus(); // Keep the cursor active
     });
-  }
-
-  void _onCall() {
-    Get.to(() => CallScreen());
   }
 
   void _onRemove() {
@@ -591,11 +600,12 @@ class _DialPadScreenState extends State<DialPadScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor:
-        themeController.isDarkMode.value ? null : AppColor.primaryColor,
+            themeController.isDarkMode.value ? null : AppColor.primaryColor,
         centerTitle: true,
         leading: Icon(
           Icons.menu,
-          color: themeController.isDarkMode.value ? AppColor.white : Colors.white,
+          color:
+              themeController.isDarkMode.value ? AppColor.white : Colors.white,
         ),
         title: Image.asset(
           width: 40.w,
@@ -610,9 +620,11 @@ class _DialPadScreenState extends State<DialPadScreen> {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 controller: _controller,
-                focusNode: _focusNode, // Attach the FocusNode
+                focusNode: _focusNode,
+                // Attach the FocusNode
                 readOnly: true,
-                showCursor: _controller.text.isNotEmpty, // Show cursor only if text exists
+                showCursor: _controller.text.isNotEmpty,
+                // Show cursor only if text exists
                 cursorColor: themeController.isDarkMode.value
                     ? AppColor.white
                     : AppColor.primaryColor,
@@ -699,7 +711,7 @@ class _DialPadScreenState extends State<DialPadScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        _onCall();
+                        _handleCall(context);
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
@@ -759,10 +771,137 @@ class _DialPadScreenState extends State<DialPadScreen> {
                 ),
               ),
             ),
+            // Center(
+            //   child: Text(
+            //     'Register Status: ${_registerState.state?.name ?? ''}',
+            //     style: TextStyle(fontSize: 18),
+            //   ),
+            // ),
           ],
         ),
       ),
     );
+  }
+
+  Future<Widget?> _handleCall(BuildContext context,
+      [bool voiceOnly = false]) async {
+    final dest = _controller.text;
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      await Permission.microphone.request();
+      await Permission.camera.request();
+    }
+    if (dest.isEmpty) {
+      ShowAppMessage.showMessage(
+        "Please enter number",
+        true,
+        snackBarType: SnackBarType.error,
+      );
+      // showDialog<void>(
+      //   context: context,
+      //   barrierDismissible: false,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text('Target is empty.'),
+      //       content: Text('dynamocloud.lineblocs.com'),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           child: Text('Ok'),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+      return null;
+    }
+
+    var mediaConstraints = <String, dynamic>{
+      'audio': true,
+      'video': true,
+    };
+
+    webrtc.MediaStream mediaStream;
+
+    try {
+      mediaStream = await webrtc.navigator.mediaDevices.getUserMedia(mediaConstraints);
+    } catch (e) {
+      print('getUserMedia() failed: $e');
+      return null;
+    }
+
+    // Add logging to track the call status
+    print('Starting call with destination: $dest');
+   controller.helper.call(dest, voiceOnly: voiceOnly, mediaStream: mediaStream).then((_) {
+      print('Call started successfully');
+      mediaStream.getAudioTracks().forEach((track) {
+        track.onEnded = () {
+          print('Audio track ended');
+        };
+      });
+    }).catchError((error) {
+      print('Call failed: $error');
+    });
+
+    // Ensure the MediaStream is not being closed or garbage collected
+    _keepMediaStreamAlive(mediaStream);
+
+    // _preferences.setString('dest', dest);
+    return null;
+  }
+
+  void _keepMediaStreamAlive(webrtc.MediaStream mediaStream) {
+    // Implement logic to keep the MediaStream alive
+    // For example, you can store it in a global variable or a stateful widget
+
+    mediaStream.getAudioTracks().forEach((track) {
+      track.onEnded = () {
+        print('Audio track ended');
+      };
+    });
+  }
+
+  @override
+  void callStateChanged(Call call, CallState state) {
+    print('Call state changed to: ${state.state}');
+    if (state.state == CallStateEnum.CALL_INITIATION) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CallScreenWidget(controller.helper,call),
+        ),
+      );
+    }
+  }
+
+  @override
+  void onNewMessage(SIPMessageRequest msg) {
+    // TODO: implement onNewMessage
+  }
+
+  @override
+  void onNewNotify(Notify ntf) {
+    // TODO: implement onNewNotify
+  }
+
+  @override
+  void onNewReinvite(ReInvite event) {
+    // TODO: implement onNewReinvite
+  }
+
+  @override
+  void registrationStateChanged(RegistrationState state) {
+    print('Registration state changed to: ${state.state}');
+    setState(() {
+      _registerState = state;
+    });
+  }
+
+  @override
+  void transportStateChanged(TransportState state) {
+    // TODO: implement transportStateChanged
   }
 }
 
