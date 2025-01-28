@@ -6,6 +6,7 @@ import 'app_dimens.dart';
 class AppFonts {
   static const String assistant = 'Assistant';
   static const String lora = 'Lora';
+  static const String arial = 'Arial';
 
   static TextStyle regularTextStyle(
       {fontSize = AppDimens.default_font,

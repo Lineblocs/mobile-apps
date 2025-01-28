@@ -290,6 +290,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart' as webrtc;
 import 'package:get/get.dart';
 import 'package:lineblocs/utils/assets_images.dart';
+import 'package:lineblocs/widget/comman_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sip_ua/sip_ua.dart';
 import 'package:sizer/sizer.dart';
@@ -559,9 +560,11 @@ class _DialPadScreenState extends State<DialPadScreen>
 
   late RegistrationState _registerState;
   BaseService baseService = BaseService();
+
   @override
   void initState() {
     super.initState();
+    controller.getUser();
     _registerState = controller.helper.registerState;
     _focusNode.requestFocus();
     _controller.addListener(() {
@@ -602,181 +605,246 @@ class _DialPadScreenState extends State<DialPadScreen>
         backgroundColor:
             themeController.isDarkMode.value ? null : AppColor.primaryColor,
         centerTitle: true,
-        leading: Icon(
-          Icons.menu,
-          color:
-              themeController.isDarkMode.value ? AppColor.white : Colors.white,
-        ),
         title: Image.asset(
           width: 40.w,
           AppImages.logo, // Path to your image
         ),
+        actions: [
+          Obx(()=>  controller.isLoading.value ? Container(): _registerState.state?.name == "REGISTRATION_FAILED" ||
+              _registerState.state?.name == "UNREGISTERED" ||
+              _registerState.state?.name == "NONE"
+              ? Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: InkWell(
+              onTap: () {
+                controller.getGetSipCredentials(context);
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColor.white,
+                    borderRadius: BorderRadius.circular(5.w),
+                  ),
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 5.0),
+                      child: Text(
+                        'Retry',
+                        style: AppFonts.mediumTextStyle(
+                            fontSize: 5.w, color: AppColor.primaryColor),
+                      ))),
+            ),
+          )
+              : Container(),)
+        ],
       ),
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            SizedBox(height: 10.w),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                // Attach the FocusNode
-                readOnly: true,
-                showCursor: _controller.text.isNotEmpty,
-                // Show cursor only if text exists
-                cursorColor: themeController.isDarkMode.value
-                    ? AppColor.white
-                    : AppColor.primaryColor,
-                textAlign: TextAlign.center,
-                style: AppFonts.boldTextStyle(
-                  fontSize: 8.w,
+            Column(
+              children: [
+                SizedBox(height: 2.w),
+                Text(
+                  controller.user.value.firstName ?? "",
+                  style: AppFonts.boldTextStyle(
+                    fontSize: 5.w,
+                    color: themeController.isDarkMode.value
+                        ? AppColor.white
+                        : AppColor.primaryColor,
+                  ),
                 ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
+                SizedBox(height: 1.w),
+                Obx(()=>  controller.isLoading.value ? Container(): Text(
+                  _registerState.state?.name == "REGISTERED"
+                      ? "Ready"
+                      : _registerState.state?.name == "REGISTRATION_FAILED"
+                      ? "Connection failed"
+                      : _registerState.state?.name == "NONE"
+                      ? "Connection failed"
+                      : "Connection failed",
+                  style: AppFonts.mediumTextStyle(
+                    fontSize: 5.w,
+                    color: _registerState.state?.name == "REGISTERED"
+                        ? AppColor.green
+                        : _registerState.state?.name == "REGISTRATION_FAILED"
+                        ? AppColor.red
+                        : AppColor.red,
+                  ),
+                ),),
+                SizedBox(height: 3.w),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: _controller,
+                    focusNode: _focusNode,
+                    readOnly: true,
+                    showCursor: _controller.text.isNotEmpty,
+                    cursorColor: themeController.isDarkMode.value
+                        ? AppColor.white
+                        : AppColor.primaryColor,
+                    textAlign: TextAlign.center,
+                    style: AppFonts.boldTextStyle(
+                      fontSize: 8.w,
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              child: GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 1.5,
-                ),
-                itemCount: 12,
-                itemBuilder: (context, index) {
-                  String value;
-                  String? subText;
-                  if (index < 9) {
-                    value = '${index + 1}';
-                    subText = _getSubText(value);
-                  } else if (index == 9) {
-                    value = '*';
-                  } else if (index == 10) {
-                    value = '0';
-                    subText = '+';
-                  } else {
-                    value = '#';
-                  }
-                  return InkWell(
-                    onTap: () => _onPressed(value),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          value,
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: themeController.isDarkMode.value
-                                ? AppColor.white
-                                : AppColor.primaryColor,
-                          ),
-                        ),
-                        if (subText != null)
-                          Text(
-                            subText,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: themeController.isDarkMode.value
-                                  ? AppColor.white
-                                  : AppColor.primaryColor,
-                            ),
-                          ),
-                      ],
+                Container(
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 1.5,
                     ),
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 10.w),
-            Container(
-              height: 25.w,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.person,
-                        color: themeController.isDarkMode.value
-                            ? AppColor.white
-                            : AppColor.primaryColor,
-                        size: 16.w,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        _handleCall(context);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Container(
-                          height: 20.w,
-                          width: 20.w,
-                          decoration: BoxDecoration(
-                            color: themeController.isDarkMode.value
-                                ? AppColor.white
-                                : AppColor.primaryColor,
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.call,
-                              color: themeController.isDarkMode.value
-                                  ? AppColor.black
-                                  : AppColor.white,
-                              size: 12.w,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: _onRemove,
-                      child: Transform.rotate(
-                        angle: 5.5,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Container(
-                            height: 12.w,
-                            width: 12.w,
-                            decoration: BoxDecoration(
-                              color: themeController.isDarkMode.value
-                                  ? AppColor.white
-                                  : AppColor.primaryColor,
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(360),
-                                bottomLeft: Radius.circular(360),
-                                bottomRight: Radius.circular(360),
+                    itemCount: 12,
+                    itemBuilder: (context, index) {
+                      String value;
+                      String? subText;
+                      if (index < 9) {
+                        value = '${index + 1}';
+                        subText = _getSubText(value);
+                      } else if (index == 9) {
+                        value = '*';
+                      } else if (index == 10) {
+                        value = '0';
+                        subText = '+';
+                      } else {
+                        value = '#';
+                      }
+                      return InkWell(
+                        onTap: () {
+                          if (_registerState.state?.name == "REGISTERED") {
+                            _onPressed(value);
+                          } else {
+                            ShowAppMessage.showMessage(
+                              "Please retry connection.",
+                              true,
+                              snackBarType: SnackBarType.error,
+                            );
+                          }
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              value,
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: themeController.isDarkMode.value
+                                    ? AppColor.white
+                                    : AppColor.primaryColor,
                               ),
                             ),
-                            child: Icon(
-                              Icons.add,
-                              color: themeController.isDarkMode.value
-                                  ? AppColor.black
-                                  : AppColor.white,
-                              size: 12.w,
+                            if (subText != null)
+                              Text(
+                                subText,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: themeController.isDarkMode.value
+                                      ? AppColor.white
+                                      : AppColor.primaryColor,
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 8.w),
+                Container(
+                  height: 25.w,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () {},
+                          child: Icon(
+                            Icons.person,
+                            color: themeController.isDarkMode.value
+                                ? AppColor.white
+                                : AppColor.primaryColor,
+                            size: 16.w,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (_registerState.state?.name == "REGISTERED") {
+                              _handleCall(context);
+                            } else {
+                              ShowAppMessage.showMessage(
+                                "Please retry connection.",
+                                true,
+                                snackBarType: SnackBarType.error,
+                              );
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Container(
+                              height: 20.w,
+                              width: 20.w,
+                              decoration: BoxDecoration(
+                                color: themeController.isDarkMode.value
+                                    ? AppColor.white
+                                    : AppColor.primaryColor,
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.call,
+                                  color: themeController.isDarkMode.value
+                                      ? AppColor.black
+                                      : AppColor.white,
+                                  size: 12.w,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        InkWell(
+                          onTap: _onRemove,
+                          child: Transform.rotate(
+                            angle: 5.5,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Container(
+                                height: 12.w,
+                                width: 12.w,
+                                decoration: BoxDecoration(
+                                  color: themeController.isDarkMode.value
+                                      ? AppColor.white
+                                      : AppColor.primaryColor,
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(360),
+                                    bottomLeft: Radius.circular(360),
+                                    bottomRight: Radius.circular(360),
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.add,
+                                  color: themeController.isDarkMode.value
+                                      ? AppColor.black
+                                      : AppColor.white,
+                                  size: 12.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-            // Center(
-            //   child: Text(
-            //     'Register Status: ${_registerState.state?.name ?? ''}',
-            //     style: TextStyle(fontSize: 18),
-            //   ),
-            // ),
+            Obx(() => controller.isLoading.value ? commonLoading() : SizedBox.shrink()),
           ],
         ),
       ),
@@ -826,7 +894,8 @@ class _DialPadScreenState extends State<DialPadScreen>
     webrtc.MediaStream mediaStream;
 
     try {
-      mediaStream = await webrtc.navigator.mediaDevices.getUserMedia(mediaConstraints);
+      mediaStream =
+          await webrtc.navigator.mediaDevices.getUserMedia(mediaConstraints);
     } catch (e) {
       print('getUserMedia() failed: $e');
       return null;
@@ -834,7 +903,9 @@ class _DialPadScreenState extends State<DialPadScreen>
 
     // Add logging to track the call status
     print('Starting call with destination: $dest');
-   controller.helper.call(dest, voiceOnly: voiceOnly, mediaStream: mediaStream).then((_) {
+    controller.helper
+        .call(dest, voiceOnly: voiceOnly, mediaStream: mediaStream)
+        .then((_) {
       print('Call started successfully');
       mediaStream.getAudioTracks().forEach((track) {
         track.onEnded = () {
@@ -870,7 +941,7 @@ class _DialPadScreenState extends State<DialPadScreen>
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CallScreenWidget(controller.helper,call),
+          builder: (context) => CallScreenWidget(controller.helper, call),
         ),
       );
     }

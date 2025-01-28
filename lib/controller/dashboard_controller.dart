@@ -48,6 +48,7 @@ class DashboardController extends GetxController{
   }
 
   Future<void> getGetSipCredentials(BuildContext context) async {
+    isLoading.value = true;
     final response = await baseService.get(
       ApiUrl.getSIPCredentials,
       isShowMessage: true,
@@ -57,6 +58,7 @@ class DashboardController extends GetxController{
       sipCredentials.value = GetSipCredentialsModel.fromJson(response.data);
       handleSave(context);
     }else{
+      isLoading.value = false;
       baseService.showSuccessMessage(response,"Error", true);
     }
   }
@@ -98,7 +100,7 @@ class DashboardController extends GetxController{
     settings.contact_uri = 'sip:${settings.authorizationUser}@${settings.host}';
     print('ContactUri: ${settings.contact_uri}');
     helper.start(settings);
-
+    isLoading.value = false;
   }
 
   void _alert(BuildContext context, String alertFieldName) {

@@ -37,8 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         bottomNavigationBar: Container(
           height: 15.w,
           width: double.infinity,
-          color:themeController.isDarkMode.value ? null : AppColor.primaryColor
-       ,
+          color:themeController.isDarkMode.value ? null : AppColor.primaryColor,
           child: Obx(()=>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

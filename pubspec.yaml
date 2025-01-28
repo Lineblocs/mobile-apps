@@ -113,5 +113,13 @@ flutter:
           weight: 500
         - asset: assets/fonts/lora/Lora-SemiBold.ttf
           weight: 600
+    - family: Arial
+      fonts:
+        - asset: assets/fonts/arial/Arial-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/arial/Arial-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/arial/Arial-Medium.ttf
+          weight: 500
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
