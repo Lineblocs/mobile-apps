@@ -286,6 +286,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.24"
+  flutter_ringtone_player:
+    dependency: "direct main"
+    description:
+      name: flutter_ringtone_player
+      sha256: d0277a04e629a6582d776f5dcc2a879a733f7326ba073b872a9ccfbff9d9b51f
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0+3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -416,6 +424,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.1"
+  keep_screen_on:
+    dependency: "direct main"
+    description:
+      name: keep_screen_on
+      sha256: "374405358a3229b0e1041b6e390ff4c74e73fbd21075298042044e0c84b5574c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
+  keep_screen_on_platform_interface:
+    dependency: transitive
+    description:
+      name: keep_screen_on_platform_interface
+      sha256: "065a0811407a970027c7530f9b8f36d11c89f36aab85b4b5acdacfe2cf3a8568"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -648,6 +672,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  proximity_screen_lock:
+    dependency: "direct main"
+    description:
+      name: proximity_screen_lock
+      sha256: "7c188e0a928d8cc32db6b4503ece4313e75903fbb69d4e281456e20853f62d01"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
+  proximity_screen_lock_android:
+    dependency: transitive
+    description:
+      name: proximity_screen_lock_android
+      sha256: "450d0440c7808ad2bbedb7df6ab7e2a3b7fd4ff536bef0f01442440fed8c8333"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
+  proximity_screen_lock_ios:
+    dependency: transitive
+    description:
+      name: proximity_screen_lock_ios
+      sha256: "051a24d053120268cec470e3a79f178ef682953db9f5c9d6178a205f45eee80b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
+  proximity_screen_lock_platform_interface:
+    dependency: transitive
+    description:
+      name: proximity_screen_lock_platform_interface
+      sha256: c0d6c8e383039e80a16436405915c4858485b8ad9248e1de17618780982a456c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   pub_semver:
     dependency: transitive
     description:
