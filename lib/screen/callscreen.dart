@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:proximity_screen_lock/proximity_screen_lock.dart';
@@ -6,7 +7,7 @@ import 'package:sip_ua/sip_ua.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 import '../utils/incallManager.dart';
-import '../utils/settings.dart';
+// import '../utils/settings.dart';
 import '../widget/action_button.dart';
 import '../widget/callscreen_loader.dart';
 
@@ -34,7 +35,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   EdgeInsetsGeometry? _localVideoMargin;
   MediaStream? _localStream;
   MediaStream? _remoteStream;
-
+  List<Contact> contactsCallScreen  = [];
   bool _showNumPad = false;
   String _timeLabel = '';//00:00
   Timer? _timer;
@@ -45,8 +46,8 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   String? _holdOriginator;
   CallStateEnum _state = CallStateEnum.NONE;
   SIPUAHelper? get helper => widget._helper;
-
-  bool get voiceonly =>
+  bool _callConfirmed = false;
+  bool get voiceonly =>  /*call!.voiceOnly && !call!.remote_has_video;*/
       (_localStream == null || _localStream!.getVideoTracks().isEmpty) &&
           (_remoteStream == null || _remoteStream!.getTracks().isEmpty);
 
@@ -99,6 +100,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
       case CallStateEnum.PROGRESS:
       case CallStateEnum.ACCEPTED:
       case CallStateEnum.CONFIRMED:
+      setState(() => _callConfirmed = true);
       case CallStateEnum.HOLD:
       case CallStateEnum.UNHOLD:
       case CallStateEnum.NONE:
@@ -230,8 +232,9 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   }
 
   void _handleAccept() async {
-    bool remoteHasVideo = call!.remote_has_audio;
-    call!.answer(helper!.buildCallOptions(!remoteHasVideo));
+    bool remoteHasVideo = call!.remote_has_video;
+    print("remote_has_audio ==> $remoteHasVideo");
+    call!.answer(helper!.buildCallOptions(remoteHasVideo));
 
     InCallService().stopRingTone();
     if (_timerStarted == false) {
@@ -239,6 +242,41 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
       _timerStarted = true;
     }
   }
+
+  // void _handleAccept() async {
+  //   bool remoteHasVideo = call!.remote_has_video;
+  //   final mediaConstraints = <String, dynamic>{
+  //     'audio': true,
+  //     'video': remoteHasVideo
+  //         ? {
+  //       'mandatory': <String, dynamic>{
+  //         'minWidth': '640',
+  //         'minHeight': '480',
+  //         'minFrameRate': '30',
+  //       },
+  //       'facingMode': 'user',
+  //       'optional': <dynamic>[],
+  //     }
+  //         : false
+  //   };
+  //   MediaStream mediaStream;
+  //
+  //   if (kIsWeb && remoteHasVideo) {
+  //     mediaStream =
+  //     await navigator.mediaDevices.getDisplayMedia(mediaConstraints);
+  //     MediaStream userStream =
+  //     await navigator.mediaDevices.getUserMedia(mediaConstraints);
+  //     mediaStream.addTrack(userStream.getAudioTracks()[0], addToNative: true);
+  //   } else {
+  //     if (!remoteHasVideo) {
+  //       mediaConstraints['video'] = false;
+  //     }
+  //     mediaStream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
+  //   }
+  //
+  //   call!.answer(helper!.buildCallOptions(!remoteHasVideo),
+  //       mediaStream: mediaStream);
+  // }
 
   void _switchCamera() {
     if (_localStream != null) {
@@ -835,6 +873,41 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
   @override
   void onNewReinvite(ReInvite event) {
-    // TODO: implement onNewReinvite
+    if (event.accept == null) return;
+    if (event.reject == null) return;
+    if (voiceonly && (event.hasVideo ?? false)) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Upgrade to video?'),
+            content: Text('$remote_identity is inviting you to video call'),
+            alignment: Alignment.center,
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  event.reject!.call({'status_code': 607});
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  event.accept!.call({});
+                  setState(() {
+                    call!.voiceOnly = false;
+                    _resizeLocalVideo();
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }
