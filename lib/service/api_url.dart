@@ -10,4 +10,5 @@ class ApiUrl {
   static String callHistoryApi = '$baseUrl/call/list?extension=';
   static String noteApi = '$baseUrl/call/';
   static String getSIPCredentials = '$baseUrl/getSIPCredentials';
+  static String getAllSettings = '$baseUrl/getAllSettings';
 }

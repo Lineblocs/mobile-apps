@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final settingModel = settingModelFromJson(jsonString);
-
 import 'dart:convert';
 
 SettingModel settingModelFromJson(String str) => SettingModel.fromJson(json.decode(str));
@@ -9,23 +5,27 @@ SettingModel settingModelFromJson(String str) => SettingModel.fromJson(json.deco
 String settingModelToJson(SettingModel data) => json.encode(data.toJson());
 
 class SettingModel {
+  String? assetsBaseUrl;
   Customizations? customizations;
   FrontendApiCreds? frontendApiCreds;
   List<AvailableTheme>? availableThemes;
 
   SettingModel({
+    this.assetsBaseUrl,
     this.customizations,
     this.frontendApiCreds,
     this.availableThemes,
   });
 
   factory SettingModel.fromJson(Map<String, dynamic> json) => SettingModel(
+    assetsBaseUrl: json["assets_base_url"],
     customizations: json["customizations"] == null ? null : Customizations.fromJson(json["customizations"]),
     frontendApiCreds: json["frontend_api_creds"] == null ? null : FrontendApiCreds.fromJson(json["frontend_api_creds"]),
     availableThemes: json["available_themes"] == null ? [] : List<AvailableTheme>.from(json["available_themes"]!.map((x) => AvailableTheme.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
+    "assets_base_url": assetsBaseUrl,
     "customizations": customizations?.toJson(),
     "frontend_api_creds": frontendApiCreds?.toJson(),
     "available_themes": availableThemes == null ? [] : List<dynamic>.from(availableThemes!.map((x) => x.toJson())),

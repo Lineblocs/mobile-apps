@@ -27,6 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    controller.getUser();
     widgetList = [
       DialPadScreen(widget._helper),
       SettingScreen(),
@@ -39,7 +40,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     //   backgroundColor: AppColor.white,
         bottomNavigationBar: Container(
           height: 15.w,
           width: double.infinity,

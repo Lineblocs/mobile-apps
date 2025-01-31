@@ -21,13 +21,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final ThemeController themeController = Get.find();
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    controller.getUser();
-  }
-
-  @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(
     //     SystemUiOverlayStyle(

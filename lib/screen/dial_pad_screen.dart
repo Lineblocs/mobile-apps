@@ -298,6 +298,7 @@ import 'package:sizer/sizer.dart';
 
 import '../controller/dashboard_controller.dart';
 import '../controller/theme_controller.dart';
+import '../service/api_url.dart';
 import '../service/base_service.dart';
 import '../service/show_app_message.dart';
 import '../utils/app_colors.dart';
@@ -325,7 +326,7 @@ class _DialPadScreenState extends State<DialPadScreen>
   @override
   void initState() {
     super.initState();
-    controller.getUser();
+    print('SIP Credentials: ${controller.logo.value}');
     _registerState = helper!.registerState;
     _focusNode.requestFocus();
     _controller.addListener(() {
@@ -429,9 +430,11 @@ class _DialPadScreenState extends State<DialPadScreen>
         backgroundColor:
             themeController.isDarkMode.value ? null : AppColor.primaryColor,
         centerTitle: true,
-        title: Image.asset(
-          width: 40.w,
-          AppImages.logo, // Path to your image
+        title: Obx(() =>
+              controller.logo.value == "" ? Container(): Image.network(
+              controller.logo.value, // Replace with your image URL
+              width: 40.w,
+            ),
         ),
         actions: [
           Obx(()=>  controller.isLoading.value ? Container(): _registerState.state?.name == "REGISTRATION_FAILED" ||
@@ -441,7 +444,9 @@ class _DialPadScreenState extends State<DialPadScreen>
             padding: const EdgeInsets.only(right: 10.0),
             child: InkWell(
               onTap: () {
-                controller.getGetSipCredentials(context);
+                controller.getGetSipCredentials(context).then((value) {
+                  handleSave(context);
+                });
               },
               child: Container(
                   decoration: BoxDecoration(
