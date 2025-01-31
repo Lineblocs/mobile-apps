@@ -118,8 +118,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_currentIndex == _onboardingData.length - 1) {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) =>  DashboardScreen()));
+                    Navigator.pushReplacementNamed(context, '/dashboard');
+                    // Navigator.pushReplacement(context,
+                    //     MaterialPageRoute(builder: (context) =>  DashboardScreen()));
                   } else {
                     _pageController.nextPage(
                       duration: Duration(milliseconds: 300),

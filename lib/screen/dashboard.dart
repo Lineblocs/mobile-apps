@@ -5,16 +5,16 @@ import 'package:lineblocs/screen/profile_screen.dart';
 import 'package:lineblocs/screen/setting_screen.dart';
 import 'package:lineblocs/utils/app_colors.dart';
 import 'package:lineblocs/utils/app_font.dart';
+import 'package:sip_ua/sip_ua.dart';
 import 'package:sizer/sizer.dart';
 import '../controller/dashboard_controller.dart';
 import 'call_history_screen.dart';
 import 'contact_screen.dart';
 import 'dial_pad_screen.dart';
-import 'message_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
-
+  DashboardScreen(this._helper, {Key? key}) : super(key: key);
+  final SIPUAHelper? _helper;
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
@@ -22,13 +22,19 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   DashboardController controller = Get.put(DashboardController());
   final ThemeController themeController = Get.put(ThemeController());
-  List<Widget> widgetList = [
-    DialPadScreen(),
-    SettingScreen(),
-    ContactListScreen(),
-    CallHistoryScreen(),
-    ProfileScreen()
-  ];
+  List<Widget> widgetList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    widgetList = [
+      DialPadScreen(widget._helper),
+      SettingScreen(),
+      ContactListScreen(),
+      CallHistoryScreen(),
+      ProfileScreen()
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {

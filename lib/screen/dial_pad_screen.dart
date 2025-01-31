@@ -302,10 +302,13 @@ import '../service/base_service.dart';
 import '../service/show_app_message.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_font.dart';
-import 'call_screen.dart';
 import 'callscreen.dart';
 
 class DialPadScreen extends StatefulWidget {
+  final SIPUAHelper? _helper;
+
+  DialPadScreen(this._helper, {Key? key}) : super(key: key);
+
   @override
   _DialPadScreenState createState() => _DialPadScreenState();
 }
@@ -315,7 +318,7 @@ class _DialPadScreenState extends State<DialPadScreen>
   final FocusNode _focusNode = FocusNode(); // Added FocusNode
   ThemeController themeController = Get.find();
   DashboardController controller = Get.find();
-
+  SIPUAHelper? get helper => widget._helper;
   late RegistrationState _registerState;
   BaseService baseService = BaseService();
 
@@ -323,13 +326,76 @@ class _DialPadScreenState extends State<DialPadScreen>
   void initState() {
     super.initState();
     controller.getUser();
-    _registerState = controller.helper.registerState;
+    _registerState = helper!.registerState;
     _focusNode.requestFocus();
     _controller.addListener(() {
       setState(() {});
     });
-    controller.helper.addSipUaHelperListener(this);
-    controller.getGetSipCredentials(context);
+    helper!.addSipUaHelperListener(this);
+    controller.getGetSipCredentials(context).then((value) {
+      handleSave(context);
+    });
+  }
+
+
+  void handleSave(BuildContext context) {
+    if (controller.sipCredentials.value.websocketEndpoint == '') {
+      _alert(context, "WebSocket URL");
+    } else if (controller.sipCredentials.value.sipUri == '') {
+      _alert(context, "SIP URI");
+    }
+    UaSettings settings = UaSettings();
+
+    settings.port = controller.sipCredentials.value.port;
+    settings.webSocketSettings.extraHeaders = {
+      'Origin': 'https:// ${Uri.parse(controller.sipCredentials.value.websocketEndpoint?? "").host}',
+      'Host': Uri.parse(controller.sipCredentials.value.websocketEndpoint?? "").host
+    };
+    settings.webSocketSettings.allowBadCertificate = true;
+    print('AllowBadCertificate: ${settings.webSocketSettings.allowBadCertificate}');
+    settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
+    settings.tcpSocketSettings.allowBadCertificate = true;
+    settings.transportType = TransportType.WS;
+    print('TransportType: ${settings.transportType}');
+    settings.uri = controller.sipCredentials.value.sipUri;
+    print('URI: ${settings.uri}');
+    settings.webSocketUrl = controller.sipCredentials.value.websocketEndpoint;
+    print('WebSocketUrl: ${settings.webSocketUrl}');
+    settings.host = controller.sipCredentials.value.host;
+    print('Host: ${settings.host}');
+    settings.authorizationUser = controller.sipCredentials.value.username;
+    print('AuthorizationUser: ${settings.authorizationUser}');
+    settings.password = controller.sipCredentials.value.secret;
+    print('Password: ${settings.password}');
+    settings.displayName = controller.sipCredentials.value.displayName;
+    print('DisplayName: ${settings.displayName}');
+    settings.userAgent = 'Dart SIP Client v1.0.0';
+    print('UserAgent: ${settings.userAgent}');
+    settings.dtmfMode = DtmfMode.RFC2833;
+    print('DtmfMode: ${settings.dtmfMode}');
+    settings.contact_uri = 'sip:${settings.authorizationUser}@${settings.host}';
+    print('ContactUri: ${settings.contact_uri}');
+    helper!.start(settings);
+  }
+  void _alert(BuildContext context, String alertFieldName) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('$alertFieldName is empty'),
+          content: Text('Please enter $alertFieldName!'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -628,7 +694,14 @@ class _DialPadScreenState extends State<DialPadScreen>
 
     var mediaConstraints = <String, dynamic>{
       'audio': true,
-      'video': true,
+      'video': {
+        'mandatory': <String, dynamic>{
+          'minWidth': '640',
+          'minHeight': '480',
+          'minFrameRate': '30',
+        },
+        'facingMode': 'user',
+      }
     };
 
     webrtc.MediaStream mediaStream;
@@ -643,7 +716,7 @@ class _DialPadScreenState extends State<DialPadScreen>
 
     // Add logging to track the call status
     print('Starting call with destination: $dest');
-    controller.helper
+    helper!
         .call(dest, voiceOnly: voiceOnly, mediaStream: mediaStream)
         .then((_) {
       print('Call started successfully');
@@ -681,7 +754,7 @@ class _DialPadScreenState extends State<DialPadScreen>
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CallScreenWidget(controller.helper, call),
+          builder: (context) => CallScreenWidget(helper!, call),
         ),
       );
     }
@@ -720,7 +793,7 @@ class _DialPadScreenState extends State<DialPadScreen>
   deactivate() {
     super.deactivate();
     // textController.text;
-    controller.helper.removeSipUaHelperListener(this);
+    helper!.removeSipUaHelperListener(this);
 
   }
 }

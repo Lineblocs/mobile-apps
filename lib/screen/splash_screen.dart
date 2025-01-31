@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lineblocs/screen/auth/login_screen.dart';
 import 'package:lineblocs/screen/dashboard.dart';
+import 'package:sip_ua/sip_ua.dart';
 
 import '../utils/assets_images.dart';
 import '../utils/shared_preferences/preferences_key.dart';
@@ -11,8 +12,8 @@ import '../utils/shared_preferences/preferences_manager.dart';
 import 'intro/intro_second_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
-
+  SplashScreen(this._helper, {Key? key}) : super(key: key);
+  final SIPUAHelper? _helper;
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -33,8 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) =>  LoginScreen()));
       } else {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) =>  DashboardScreen()));
+        Navigator.pushReplacementNamed(context, '/dashboard', arguments: {
+          "helper": widget._helper
+        });
       }
     });
   }
