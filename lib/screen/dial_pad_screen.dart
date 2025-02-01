@@ -285,6 +285,7 @@
 //   }
 // }
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart' as webrtc;
@@ -322,7 +323,7 @@ class _DialPadScreenState extends State<DialPadScreen>
   SIPUAHelper? get helper => widget._helper;
   late RegistrationState _registerState;
   BaseService baseService = BaseService();
-
+  final AudioPlayer _audioPlayer = AudioPlayer();
   @override
   void initState() {
     super.initState();
@@ -545,6 +546,7 @@ class _DialPadScreenState extends State<DialPadScreen>
                         onTap: () {
                           if (_registerState.state?.name == "REGISTERED") {
                             _onPressed(value);
+                            _audioPlayer.play(AssetSource('sounds/tick.mp3'),volume: 0.3);
                           } else {
                             ShowAppMessage.showMessage(
                               "Please retry connection.",
