@@ -1,16 +1,55 @@
-# lineblocs
+# LineBlocs
 
-A new Flutter project.
+A new Flutter project for managing contacts, making calls, and more.
+
+## Features
+
+- Dial pad with tick sound on digit press
+- Contact list management
+- Call history
+- User profile management
+- Settings screen
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter SDK: `>=3.0.0 <4.0.0`
+- Android Studio or Visual Studio Code
+- Dart SDK
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Prerequisites
+   Before cloning a repository, make sure you have:
+
+- Git installed
+  Download & install from Git's official website.
+- A GitHub account
+  Sign up at GitHub.
+- An SSH key (optional, but recommended)
+  Generate and add it to GitHub for authentication.
+
+1. Clone a GitHub Repository
+   You can clone a GitHub repository using HTTPS or SSH.
+
+   Find the Repository URL
+
+   Go to the GitHub repository you want to clone.
+   Click the “Code” button.
+   Copy the HTTPS URL (e.g., https://github.com/username/repo.git).
+   Run the Clone Command Open a terminal and run:
+   git clone https://github.com/username/repo.git
+
+    Replace the URL with the one you copied.
+
+### Install dependencies:  
+  flutter pub get
+### Ensure you have the required assets:  
+assets/images/
+assets/sounds/tick.mp3
+
+### Running the Project
+Connect your device or start an emulator.
+### Run the project:
+flutter run

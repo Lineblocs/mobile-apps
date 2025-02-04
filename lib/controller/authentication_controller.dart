@@ -2,7 +2,6 @@
 import 'package:get/get.dart';
 
 import '../model/login_respones_model.dart';
-import '../screen/call_screen.dart';
 import '../screen/intro/intro_second_screen.dart';
 import '../service/api_url.dart';
 import '../service/base_service.dart';
@@ -29,6 +28,7 @@ class AuthenticationController extends GetxController {
         "challenge":null
       },
     );
+    print("response.statusCode ${response.statusCode}");
     if (response.statusCode == 200) {
       print(response.data);
       baseService.showSuccessMessage(response,"Successfully login", true);
