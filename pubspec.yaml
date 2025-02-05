@@ -45,7 +45,7 @@ dependencies:
   file_picker: ^8.1.7
   video_player: ^2.9.2
   permission_handler: ^11.3.1
-  contacts_service: ^0.6.3
+  flutter_contacts: ^1.1.9+2
   scrollable_positioned_list: ^0.2.3
   audioplayers: ^6.1.0
   sip_ua: ^1.0.1

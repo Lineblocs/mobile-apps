@@ -1,11 +1,15 @@
 import 'dart:async';
-import 'package:contacts_service/contacts_service.dart';
+// import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/contact.dart';
+import 'package:get/get.dart' as g;
 // import 'package:proximity_screen_lock/proximity_screen_lock.dart';
 import 'package:sip_ua/sip_ua.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
+import '../controller/theme_controller.dart';
+import '../utils/app_colors.dart';
 import '../utils/incallManager.dart';
 // import '../utils/settings.dart';
 import '../widget/action_button.dart';
@@ -56,7 +60,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   String? get direction => call?.direction;
 
   Call? get call => widget._call;
-
+  final ThemeController  themeController = g.Get.find();
 
   @override
   void callStateChanged(Call call, CallState callState) {
@@ -401,16 +405,11 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
     if (contactsCallScreen.isNotEmpty) {
       for (var i = 0; i < contactsCallScreen.length; i++) {
-        if (contactsCallScreen[i].phones!.isNotEmpty) {
-          if (contactsCallScreen[i].phones?.elementAt(0).value != null) {
-            numTest1 = contactsCallScreen[i].phones?.elementAt(0).value;
-            phnFlattened = flattenContactNumber(numTest1??"");
-          } else if (contactsCallScreen[i].phones!.length > 1) {
-            numTest2 = contactsCallScreen[i].phones!.elementAt(1).value;
-            phnFlattened = flattenContactNumber(numTest2?? "");
-          }
+        if (contactsCallScreen[i].phones.isNotEmpty) {
+          numTest1 = contactsCallScreen[i].phones.first.number;
+          phnFlattened = flattenContactNumber(numTest1??"");
 
-          if (phnFlattened!.contains(searchTermFlatten)) {
+          if (phnFlattened.contains(searchTermFlatten)) {
             if (i != 0) {
               result = contactsCallScreen[i].displayName;
             }
@@ -805,7 +804,9 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
                           //         : ''
                           //     ),
                           style:
-                          const TextStyle(fontSize: 24, color: Colors.black54),
+                           TextStyle(fontSize: 24, color: themeController.isDarkMode.value
+                              ? AppColor.white
+                              : AppColor.black),
                         ))),
                 Center(
                     child: Padding(
@@ -813,14 +814,18 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
                         child: Text(
                           '$remote_identity',
                           style:
-                          const TextStyle(fontSize: 18, color: Colors.black54),
+                           TextStyle(fontSize: 18, color: themeController.isDarkMode.value
+                              ? AppColor.white
+                              : AppColor.black),
                         ))),
                 Center(
                     child: Padding(
                         padding: const EdgeInsets.all(6),
                         child: Text(_timeLabel,
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black54)))),
+                            style:  TextStyle(
+                                fontSize: 14, color:  themeController.isDarkMode.value
+                            ? AppColor.white
+                                : AppColor.black)))),
               ],
             )),
       ),
@@ -839,7 +844,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Center(child: Text("$direction")),
+          title: Center(child: Text("$direction",style: TextStyle(color: AppColor.white),)),
           flexibleSpace: Container(
               decoration: const BoxDecoration(
                   gradient: LinearGradient(
