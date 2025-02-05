@@ -40,31 +40,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: Container(
-          height: 15.w,
-          width: double.infinity,
-          color:themeController.isDarkMode.value ? null : AppColor.primaryColor,
-          child: Obx(()=>
-            Row(
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(bottom: 5.w),
+          child: Container(
+            height: 15.w,
+            width: double.infinity,
+            color: themeController.isDarkMode.value ? null : AppColor.primaryColor,
+            child: Obx(() => Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 itemNavigationBar("Home", Icons.home, () {
                   controller.index.value = 0;
-                },iconColor: controller.index.value == 0 ? AppColor.white:AppColor.grey),
+                }, iconColor: controller.index.value == 0 ? AppColor.white : AppColor.grey),
                 itemNavigationBar("Setting", Icons.settings, () {
                   controller.index.value = 1;
-                },iconColor: controller.index.value == 1 ? AppColor.white:AppColor.grey),
+                }, iconColor: controller.index.value == 1 ? AppColor.white : AppColor.grey),
                 itemNavigationBar("Contacts", Icons.group, () {
                   controller.index.value = 2;
-                },iconColor: controller.index.value == 2 ? AppColor.white:AppColor.grey),
+                }, iconColor: controller.index.value == 2 ? AppColor.white : AppColor.grey),
                 itemNavigationBar("Call History", Icons.call, () {
                   controller.index.value = 3;
-                },iconColor: controller.index.value == 3 ? AppColor.white:AppColor.grey),
+                }, iconColor: controller.index.value == 3 ? AppColor.white : AppColor.grey),
                 itemNavigationBar("Profile", Icons.person, () {
                   controller.index.value = 4;
-                },iconColor: controller.index.value == 4 ? AppColor.white:AppColor.grey),
+                }, iconColor: controller.index.value == 4 ? AppColor.white : AppColor.grey),
               ],
-            )
+            )),
           ),
         ),
         body:  Obx(() => widgetList[controller.index.value]));

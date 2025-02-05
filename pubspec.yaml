@@ -49,7 +49,7 @@ dependencies:
   scrollable_positioned_list: ^0.2.3
   audioplayers: ^6.1.0
   sip_ua: ^1.0.1
-  flutter_webrtc: ^0.12.4
+  flutter_webrtc: ^0.12.7
   proximity_screen_lock: ^2.1.1
   keep_screen_on: ^3.0.0
   flutter_ringtone_player: ^4.0.0+3

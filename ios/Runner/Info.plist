@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>9</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -51,6 +51,10 @@
 	<string>This app needs access to your photo library to allow you to select and update your profile picture.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>App uses camera for video calling.</string>
+	<key>NSContactsUsageDescription</key>
+    <string>This app needs access contacts.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>The app uses the audio play</string>
 
 </dict>
 </plist>
