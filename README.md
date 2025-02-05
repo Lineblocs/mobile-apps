@@ -30,7 +30,7 @@ A new Flutter project for managing contacts, making calls, and more.
 - An SSH key (optional, but recommended)
   Generate and add it to GitHub for authentication.
 
-1. Clone a GitHub Repository
+2. Clone a GitHub Repository
    You can clone a GitHub repository using HTTPS or SSH.
 
    Find the Repository URL
@@ -43,13 +43,15 @@ A new Flutter project for managing contacts, making calls, and more.
 
     Replace the URL with the one you copied.
 
+### Ensure you have the required assets:
+assets/images/assets/sounds/tick.mp3
+
 ### Install dependencies:  
+Run the following command in the project root directory:
   flutter pub get
-### Ensure you have the required assets:  
-assets/images/
-assets/sounds/tick.mp3
 
 ### Running the Project
 Connect your device or start an emulator.
+
 ### Run the project:
 flutter run
