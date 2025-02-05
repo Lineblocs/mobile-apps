@@ -41,7 +41,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   MediaStream? _remoteStream;
   List<Contact> contactsCallScreen  = [];
   bool _showNumPad = false;
-  String _timeLabel = '';//00:00
+  String _timeLabel = '';
   Timer? _timer;
   bool _audioMuted = false;
   bool _videoMuted = false;
@@ -126,7 +126,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
     super.initState();
     _initRenderers();
     helper!.addSipUaHelperListener(this);
-    _startTimer();
+
   }
 
   @override

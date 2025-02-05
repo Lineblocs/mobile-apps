@@ -55,3 +55,6 @@ Connect your device or start an emulator.
 
 ### Run the project:
 flutter run
+
+### Build the project:
+demo link: https://drive.google.com/file/d/1L8nU7LONfvAvkSkIAwPYfqhCX40MeY1R/view?usp=sharing

@@ -43,7 +43,7 @@ class BaseService {
     } on DioException catch (ex) {
       print(ex.response?.statusCode);
       print(ex.response?.data);
-      return _handleError(ex, url, isShowMessage);
+      return handleError(ex, url, isShowMessage);
     }
   }
   Future<Response> getParameters(String url, {Map<String, dynamic>? queryParameters, bool isShowMessage = true}) async {
@@ -52,7 +52,7 @@ class BaseService {
       final response = await dio.get(url, queryParameters: queryParameters);
       return response;
     } on DioException catch (ex) {
-      return _handleError(ex, url, isShowMessage);
+      return handleError(ex, url, isShowMessage);
     }
   }
 
@@ -62,7 +62,8 @@ class BaseService {
       final response = await dio.post(url, data: data);
       return response;
     } on DioException catch (ex) {
-      return _handleError(ex, url, isShowMessage);
+      print(ex.response?.statusCode);
+      return handleError(ex, url, isShowMessage);
     }
   }
 
@@ -73,7 +74,7 @@ class BaseService {
       // showSuccessMessage(response, isShowMessage);
       return response;
     } on DioException catch (ex) {
-      return _handleError(ex, url, isShowMessage);
+      return handleError(ex, url, isShowMessage);
     }
   }
 
@@ -84,7 +85,7 @@ class BaseService {
       // showSuccessMessage(response, isShowMessage);
       return response;
     } on DioException catch (ex) {
-      return _handleError(ex, url, isShowMessage);
+      return handleError(ex, url, isShowMessage);
     }
   }
 
@@ -98,7 +99,7 @@ class BaseService {
     }
   }
 
-  Response _handleError(DioException ex, String url, bool isShowMessage) {
+  Response handleError(DioException ex, String url, bool isShowMessage) {
     if (ex.response != null) {
       PrintAPINameAndResponse.printAPIErrorResponse(apiUrl: url, response: ex.response!);
       if (isShowMessage) {

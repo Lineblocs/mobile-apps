@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lineblocs/controller/theme_controller.dart';
@@ -41,7 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: 5.w),
+          padding: EdgeInsets.only(bottom: Platform.isAndroid ? 0.w : 5.w),
           child: Container(
             height: 15.w,
             width: double.infinity,
