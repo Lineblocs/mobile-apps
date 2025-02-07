@@ -608,11 +608,11 @@ class _DialPadScreenState extends State<DialPadScreen>
                             if (_registerState.state?.name == "REGISTERED") {
                               _handleCall(context);
                             } else {
-                              ShowAppMessage.showMessage(
-                                "Please retry connection.",
-                                true,
-                                snackBarType: SnackBarType.error,
-                              );
+                              // ShowAppMessage.showMessage(
+                              //   "Please retry connection.",
+                              //   true,
+                              //   snackBarType: SnackBarType.error,
+                              // );
                             }
                           },
                           child: Padding(

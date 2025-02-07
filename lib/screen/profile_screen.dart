@@ -8,6 +8,7 @@ import 'package:sizer/sizer.dart';
 import '../controller/dashboard_controller.dart';
 import '../controller/theme_controller.dart';
 import '../utils/app_colors.dart';
+import '../utils/app_string.dart';
 import '../utils/shared_preferences/preferences_manager.dart';
 import '../widget/comman_widget.dart';
 
@@ -36,7 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             backgroundColor:
                 themeController.isDarkMode.value ? null : AppColor.primaryColor,
             title: Text(
-              'Profile',
+              AppString().strProfile,
               style:
                   AppFonts.boldTextStyle(fontSize: 20.0, color: AppColor.white),
             ),
@@ -50,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Container(
                           child: ListView(children: [
                             ListTile(
-                              title: Text('Name',
+                              title: Text(AppString().strName,
                                   style: AppFonts.boldTextStyle(
                                     fontSize: 15.0,
                                   )),
@@ -60,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   )),
                             ),
                             ListTile(
-                                title: Text('Email',
+                                title: Text(AppString().strEmail,
                                     style:
                                         AppFonts.boldTextStyle(fontSize: 15.0)),
                                 subtitle:
@@ -69,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           fontSize: 14.0,
                                         ))),
                             ListTile(
-                                title: Text('Plan',
+                                title: Text(AppString().strPlan,
                                     style: AppFonts.boldTextStyle(
                                       fontSize: 15.0,
                                     )),
@@ -78,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       fontSize: 14.0,
                                     ))),
                             ListTile(
-                                title: Text('Billing package',
+                                title: Text(AppString().strBillingPackage,
                                     style: AppFonts.boldTextStyle(
                                       fontSize: 15.0,
                                     )),
@@ -93,17 +94,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text('Logout',
+                                        title: Text(AppString().strLogout,
                                             style: AppFonts.boldTextStyle(
                                               fontSize: 15.0,
                                             )),
                                         content: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Text('Are you sure you want to logout?',
+                                            Text(AppString().strAreyousureyouwanttologout,
                                                 style: AppFonts.mediumTextStyle(
                                                   fontSize: 15.0,
-                                                  color: AppColor.black,
+                                                  color: themeController.isDarkMode.value ? AppColor.white : AppColor.black,
                                                 ))
                                           ],
                                         ),
@@ -112,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               onPressed: () {
                                                 Navigator.pop(context);
                                               },
-                                              child: Text('Cancel',
+                                              child: Text(AppString().strCancel,
                                                   style: AppFonts.boldTextStyle(
                                                     fontSize: 15.0,
                                                     color: Colors.red,
@@ -123,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 PreferencesManager.clear();
                                                 Get.offAll(() => LoginScreen());
                                               },
-                                              child: Text('Yes',
+                                              child: Text(AppString().strYes,
                                                   style: AppFonts.boldTextStyle(
                                                     fontSize: 15.0,
                                                     color: Colors.green,
@@ -133,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     });
                               },
                               child: ListTile(
-                                  title: Text('Logout',
+                                  title: Text(AppString().strLogout,
                                       style: AppFonts.boldTextStyle(
                                         fontSize: 15.0,
                                         color: Colors.red,

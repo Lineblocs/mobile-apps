@@ -1,17 +1,15 @@
 import 'dart:async';
-// import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:get/get.dart' as g;
-// import 'package:proximity_screen_lock/proximity_screen_lock.dart';
 import 'package:sip_ua/sip_ua.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 import '../controller/theme_controller.dart';
 import '../utils/app_colors.dart';
 import '../utils/incallManager.dart';
-// import '../utils/settings.dart';
 import '../widget/action_button.dart';
 import '../widget/callscreen_loader.dart';
 
@@ -64,6 +62,10 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
   @override
   void callStateChanged(Call call, CallState callState) {
+    if (callState.state == CallStateEnum.STREAM) {
+      // Handle incoming call in the background
+      FlutterBackground.enableBackgroundExecution();
+    }
     if (callState.state == CallStateEnum.HOLD ||
         callState.state == CallStateEnum.UNHOLD) {
       _hold = callState.state == CallStateEnum.HOLD;
@@ -126,7 +128,12 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
     super.initState();
     _initRenderers();
     helper!.addSipUaHelperListener(this);
+    widget._helper.addSipUaHelperListener(this);
+    _initializeBackgroundService();
+  }
 
+  Future<void> _initializeBackgroundService() async {
+    await FlutterBackground.enableBackgroundExecution();
   }
 
   @override
@@ -877,6 +884,8 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   @override
   void dispose() {
     _localStream?.dispose();
+    widget._helper.removeSipUaHelperListener(this);
+    FlutterBackground.disableBackgroundExecution();
     super.dispose();
   }
   @override

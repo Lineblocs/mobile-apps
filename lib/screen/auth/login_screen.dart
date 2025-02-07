@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lineblocs/screen/auth/signup_screen.dart';
 import 'package:lineblocs/utils/app_colors.dart';
+import 'package:lineblocs/utils/app_string.dart';
 import 'package:lineblocs/widget/comman_widget.dart';
 import 'package:sizer/sizer.dart';
-
 import '../../controller/authentication_controller.dart';
 import '../../utils/app_font.dart';
 import '../../utils/assets_images.dart';
@@ -41,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 10.w),
                   Text(
-                    'Login',
+                    AppString().strLogin,
                     style: AppFonts.boldTextStyle(
                         fontSize: 8.w, color: AppColor.primaryColor),
                   ),
@@ -57,10 +56,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             textInputType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please enter email';
+                                return AppString().strEnterEmail;
                               }
                               return null;
-                            }, labelText: 'Email'),
+                            },
+                            labelText: AppString().strEmail),
                         SizedBox(height: 3.w),
                         textFieldWidget(
                             prefixIcon: Icons.lock,
@@ -70,10 +70,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             // textInputAction: TextInputAction.done,
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please enter password';
+                                return AppString().strEnterPassword;
                               }
                               return null;
-                            }, labelText: 'Password'),
+                            },
+                            labelText: AppString().strPassword),
                       ]),
                     ),
                   ),
@@ -96,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            'Login',
+                            AppString().strLogin,
                             style: AppFonts.boldTextStyle(
                                 fontSize: 5.w, color: AppColor.white),
                           ),

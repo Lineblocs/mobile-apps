@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-CallRecoderModel callRecoderModelFromJson(String str) => CallRecoderModel.fromJson(json.decode(str));
+CallRecordingsModel callRecoderModelFromJson(String str) => CallRecordingsModel.fromJson(json.decode(str));
 
-String callRecoderModelToJson(CallRecoderModel data) => json.encode(data.toJson());
+String callRecoderModelToJson(CallRecordingsModel data) => json.encode(data.toJson());
 
-class CallRecoderModel {
+class CallRecordingsModel {
   int? id;
   String? apiId;
   String? from;
@@ -31,9 +31,9 @@ class CallRecoderModel {
   String? durationLiveHuman;
   int? durationEnded;
   String? durationEndedHuman;
-  List<dynamic>? recordings;
+  List<Recording>? recordings;
 
-  CallRecoderModel({
+  CallRecordingsModel({
     this.id,
     this.apiId,
     this.from,
@@ -63,7 +63,7 @@ class CallRecoderModel {
     this.recordings,
   });
 
-  factory CallRecoderModel.fromJson(Map<String, dynamic> json) => CallRecoderModel(
+  factory CallRecordingsModel.fromJson(Map<String, dynamic> json) => CallRecordingsModel(
     id: json["id"],
     apiId: json["api_id"],
     from: json["from"],
@@ -90,7 +90,7 @@ class CallRecoderModel {
     durationLiveHuman: json["duration_live_human"],
     durationEnded: json["duration_ended"],
     durationEndedHuman: json["duration_ended_human"],
-    recordings: json["recordings"] == null ? [] : List<dynamic>.from(json["recordings"]!.map((x) => x)),
+    recordings: json["recordings"] == null ? [] : List<Recording>.from(json["recordings"]!.map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
@@ -121,5 +121,101 @@ class CallRecoderModel {
     "duration_ended": durationEnded,
     "duration_ended_human": durationEndedHuman,
     "recordings": recordings == null ? [] : List<dynamic>.from(recordings!.map((x) => x)),
+  };
+}
+
+class Recording {
+  int? id;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? apiId;
+  String? status;
+  String? uri;
+  int? userId;
+  int? callId;
+  String? tag;
+  String? name;
+  int? duration;
+  int? size;
+  int? workspaceId;
+  int? transcriptionReady;
+  String? transcriptionText;
+  String? planSnapshot;
+  String? storageId;
+  String? storageServerIp;
+  String? s3Url;
+  int? relocationAttempts;
+  int? trim;
+
+  Recording({
+    this.id,
+    this.createdAt,
+    this.updatedAt,
+    this.apiId,
+    this.status,
+    this.uri,
+    this.userId,
+    this.callId,
+    this.tag,
+    this.name,
+    this.duration,
+    this.size,
+    this.workspaceId,
+    this.transcriptionReady,
+    this.transcriptionText,
+    this.planSnapshot,
+    this.storageId,
+    this.storageServerIp,
+    this.s3Url,
+    this.relocationAttempts,
+    this.trim,
+  });
+
+  factory Recording.fromJson(Map<String, dynamic> json) => Recording(
+    id: json["id"],
+    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+    apiId: json["api_id"],
+    status: json["status"],
+    uri: json["uri"],
+    userId: json["user_id"],
+    callId: json["call_id"],
+    tag: json["tag"],
+    name: json["name"],
+    duration: json["duration"],
+    size: json["size"],
+    workspaceId: json["workspace_id"],
+    transcriptionReady: json["transcription_ready"],
+    transcriptionText: json["transcription_text"],
+    planSnapshot: json["plan_snapshot"],
+    storageId: json["storage_id"],
+    storageServerIp: json["storage_server_ip"],
+    s3Url: json["s3_url"],
+    relocationAttempts: json["relocation_attempts"],
+    trim: json["trim"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "created_at": createdAt?.toIso8601String(),
+    "updated_at": updatedAt?.toIso8601String(),
+    "api_id": apiId,
+    "status": status,
+    "uri": uri,
+    "user_id": userId,
+    "call_id": callId,
+    "tag": tag,
+    "name": name,
+    "duration": duration,
+    "size": size,
+    "workspace_id": workspaceId,
+    "transcription_ready": transcriptionReady,
+    "transcription_text": transcriptionText,
+    "plan_snapshot": planSnapshot,
+    "storage_id": storageId,
+    "storage_server_ip": storageServerIp,
+    "s3_url": s3Url,
+    "relocation_attempts": relocationAttempts,
+    "trim": trim,
   };
 }

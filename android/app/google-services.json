@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "507730239963",
+    "project_id": "lineblocs-18e64",
+    "storage_bucket": "lineblocs-18e64.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507730239963:android:1d705bd25ab916291a47fe",
+        "android_client_info": {
+          "package_name": "com.lineblocs.userapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv6xzA3diMrfClAPxRMZxJv6KGIaHpGDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

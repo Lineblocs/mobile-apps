@@ -1,8 +1,11 @@
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background/flutter_background.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
 import 'package:lineblocs/screen/callscreen.dart';
@@ -17,12 +20,28 @@ import 'controller/theme_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  await FlutterBackground.initialize();
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: 'AIzaSyDv6xzA3diMrfClAPxRMZxJv6KGIaHpGDc',
+      appId: '1:507730239963:android:1d705bd25ab916291a47fe',
+      messagingSenderId: '507730239963',
+      projectId: 'lineblocs-18e64',
+      storageBucket: 'lineblocs-18e64.firebasestorage.app',
+    )
+  );
   if (WebRTC.platformIsDesktop) {
     debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   }
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+  const InitializationSettings initializationSettings =
+  InitializationSettings(android: initializationSettingsAndroid);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   final ThemeController themeController = Get.put(ThemeController());
-  runApp( MyApp());
+  runApp(MyApp());
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: themeController.isDarkMode.value ? null :
     AppColor.primaryColor,
@@ -34,14 +53,9 @@ Future<void> main() async {
 typedef PageContentBuilder = Widget Function(
     [SIPUAHelper? helper, Object? arguments]);
 
-class MyApp extends StatefulWidget {
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
   final ThemeController themeController = Get.put(ThemeController());
-  String? _fcmToken;
+
   final SIPUAHelper _helper = SIPUAHelper();
 
   Map<String, PageContentBuilder> routes = {
@@ -85,30 +99,32 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  @override
-  initState() {
-    super.initState();
-    // _getToken();
-  }
+}
 
-  Future<void> _getToken() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 
-    // Request permission for iOS
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  _showNotification(message);
+}
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      String? token = await messaging.getToken();
-      setState(() {
-        _fcmToken = token;
-      });
-      print("FCM Token: $_fcmToken");
-    } else {
-      print("Permission declined");
-    }
-  }
+void _showNotification(RemoteMessage message) async {
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  AndroidNotificationDetails(
+    'your_channel_id',
+    'your_channel_name',
+    importance: Importance.max,
+    priority: Priority.high,
+    showWhen: false,
+  );
+  const NotificationDetails platformChannelSpecifics =
+  NotificationDetails(android: androidPlatformChannelSpecifics);
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    message.notification?.title,
+    message.notification?.body,
+    platformChannelSpecifics,
+    payload: 'item x',
+  );
 }

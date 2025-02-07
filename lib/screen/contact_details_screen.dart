@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 
 import '../controller/theme_controller.dart';
 import '../utils/app_colors.dart';
+import '../utils/app_string.dart';
 
 class ContatctDetailsScreen extends StatelessWidget {
 
@@ -31,7 +32,7 @@ class ContatctDetailsScreen extends StatelessWidget {
           ),
           centerTitle: true,
           title: Text(
-            'Contact Details',
+            AppString().strContactDetails,
             style:
                 AppFonts.boldTextStyle(fontSize: 20.0,
                     color: AppColor.white
@@ -63,15 +64,15 @@ class ContatctDetailsScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    actionButton(Icons.call, "Call",AppColor.green),
-                    actionButton(Icons.message, "Text",AppColor.yellow4),
-                    actionButton(Icons.video_call, "Video",AppColor.blue),
+                    actionButton(Icons.call, AppString().strCall,AppColor.green),
+                    actionButton(Icons.message, AppString().strText,AppColor.yellow4),
+                    actionButton(Icons.video_call, AppString().strVideo,AppColor.blue),
                     //  actionButton(Icons.location_on, "Location"),
                   ],
                 ),
               ),
               // Phone Numbers Section
-              sectionTitle("Phone Numbers"),
+              sectionTitle(AppString().strPhoneNumbers),
               ...phoneNumbers.map((number) => ListTile(
                     leading: const Icon(Icons.phone),
                     title: Text(number,style: AppFonts.mediumTextStyle(

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lineblocs/controller/theme_controller.dart';
@@ -25,11 +26,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   DashboardController controller = Get.put(DashboardController());
   final ThemeController themeController = Get.put(ThemeController());
   List<Widget> widgetList = [];
-
   @override
   void initState() {
     super.initState();
-    controller.getUser();
+    controller.getUser(context);
+    _getToken();
     widgetList = [
       DialPadScreen(widget._helper),
       SettingScreen(),
@@ -91,5 +92,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _getToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      if(Platform.isIOS){
+        String? token = await messaging.getAPNSToken();
+        controller.postUpdateWorkspaceUserApi("", token!);
+        print("APN Token: $token");
+      }else {
+        String? token = await messaging.getToken();
+        controller.postUpdateWorkspaceUserApi(token!, "");
+        print("FCM Token: $token");
+      }
+    } else {
+      print("Permission declined");
+    }
   }
 }

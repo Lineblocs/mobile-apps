@@ -35,7 +35,7 @@ class _SettingScreenState extends State<SettingScreen> {
        Scaffold(
            appBar: AppBar(centerTitle: true,
              title:Text(
-               'Setting',
+               AppString().strSetting,
                style: AppFonts.boldTextStyle(
                    fontSize: 20.0, color: themeController.isDarkMode.value ? AppColor.white :
                AppColor.white),
@@ -63,7 +63,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       // ),
                       Obx((){
                         return SwitchListTile(
-                          title: Text("Enable Two Factor Authentication"),
+                          title: Text(AppString().strEnableTwoFactorAuthentication),
                           value: controller.isTFA.value,
                           activeColor: AppColor.primaryColor,
                           inactiveThumbColor: AppColor.grey,
@@ -79,9 +79,9 @@ class _SettingScreenState extends State<SettingScreen> {
                           child: Column(
                             children: [
                               ListTile(
-                                title: const Text('SMS Verification'),
+                                title:  Text(AppString().strSMSVerification),
                                 leading: Radio<String>(
-                                  value: 'sms',
+                                  value: AppString().strSMS,
                                   activeColor: AppColor.primaryColor,
                                   groupValue: controller.selectedAuthMethod.value,
                                   onChanged: (String? value) {
@@ -92,9 +92,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                 ),
                               ),
                               ListTile(
-                                title: const Text('Authentication App'),
+                                title:  Text(AppString().strAuthenticationApp),
                                 leading: Radio<String>(
-                                  value: 'app',
+                                  value: AppString().strApp,
                                   activeColor: AppColor.primaryColor,
                                   groupValue: controller.selectedAuthMethod.value,
                                   onChanged: (String? value) {
@@ -116,10 +116,10 @@ class _SettingScreenState extends State<SettingScreen> {
                               controller: phoneController,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please enter Phone number';
+                                  return AppString().strPleaseEnterPhoneNumber;
                                 }
                                 return null;
-                              }, labelText: 'Phone Number'),
+                              }, labelText: AppString().strPhoneNumber),
                         ) : Container(
                             child: Padding(
                               padding:  EdgeInsets.symmetric(horizontal: 4.w),
@@ -141,7 +141,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             onTap: () {
                               if(controller.selectedAuthMethod.value == "sms") {
                                 if (phoneController.text.isEmpty) {
-                                  showSnackBars(context, 'Please enter phone number',Colors.red);
+                                  showSnackBars(context, AppString().strPleaseEnterPhoneNumber,Colors.red);
                                 } else {
                                 }
                               }else{
@@ -156,7 +156,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               ),
                               child: Center(
                                 child: Text(
-                                  'Submit',
+                                  AppString().strSubmit,
                                   style: AppFonts.boldTextStyle(
                                       fontSize: 5.w, color: AppColor.white),
                                 ),
@@ -167,7 +167,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       }),
                       Obx(() {
                         return SwitchListTile(
-                          title: Text("Dark Mode"),
+                          title: Text(AppString().strDarkMode),
                           value: themeController.isDarkMode.value,
                           activeColor: AppColor.primaryColor,
                           inactiveThumbColor: AppColor.grey,

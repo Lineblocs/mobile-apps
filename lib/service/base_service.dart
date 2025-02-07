@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:lineblocs/service/print_api_name_and_response.dart';
 import 'package:lineblocs/service/show_app_message.dart';
 
+import '../screen/auth/login_screen.dart';
 import '../utils/shared_preferences/preferences_key.dart';
 import '../utils/shared_preferences/preferences_manager.dart';
 import 'api_url.dart';
@@ -35,7 +37,7 @@ class BaseService {
     return dio;
   }
 
-  Future<Response> get(String url,{bool isShowMessage = true}) async {
+  Future<Response> get(String url,BuildContext context,{bool isShowMessage = true,}) async {
     final dio = getDio();
     try {
       final response = await dio.get(url);
@@ -43,6 +45,8 @@ class BaseService {
     } on DioException catch (ex) {
       print(ex.response?.statusCode);
       print(ex.response?.data);
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) =>  LoginScreen()));
       return handleError(ex, url, isShowMessage);
     }
   }
