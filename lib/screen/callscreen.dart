@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_background/flutter_background.dart';
+// import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:get/get.dart' as g;
 import 'package:sip_ua/sip_ua.dart';
@@ -62,10 +62,10 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
   @override
   void callStateChanged(Call call, CallState callState) {
-    if (callState.state == CallStateEnum.STREAM) {
-      // Handle incoming call in the background
-      FlutterBackground.enableBackgroundExecution();
-    }
+    // if (callState.state == CallStateEnum.STREAM) {
+    //   // Handle incoming call in the background
+    //   FlutterBackground.enableBackgroundExecution();
+    // }
     if (callState.state == CallStateEnum.HOLD ||
         callState.state == CallStateEnum.UNHOLD) {
       _hold = callState.state == CallStateEnum.HOLD;
@@ -129,12 +129,12 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
     _initRenderers();
     helper!.addSipUaHelperListener(this);
     widget._helper.addSipUaHelperListener(this);
-    _initializeBackgroundService();
+    // _initializeBackgroundService();
   }
 
-  Future<void> _initializeBackgroundService() async {
-    await FlutterBackground.enableBackgroundExecution();
-  }
+  // Future<void> _initializeBackgroundService() async {
+  //   await FlutterBackground.enableBackgroundExecution();
+  // }
 
   @override
   void registrationStateChanged(RegistrationState state) {}
@@ -885,7 +885,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   void dispose() {
     _localStream?.dispose();
     widget._helper.removeSipUaHelperListener(this);
-    FlutterBackground.disableBackgroundExecution();
+    // FlutterBackground.disableBackgroundExecution();
     super.dispose();
   }
   @override

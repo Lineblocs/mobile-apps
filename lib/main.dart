@@ -1,10 +1,10 @@
-
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background/flutter_background.dart';
+// import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
@@ -20,26 +20,43 @@ import 'controller/theme_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterBackground.initialize();
-  await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: 'AIzaSyDv6xzA3diMrfClAPxRMZxJv6KGIaHpGDc',
-      appId: '1:507730239963:android:1d705bd25ab916291a47fe',
-      messagingSenderId: '507730239963',
-      projectId: 'lineblocs-18e64',
-      storageBucket: 'lineblocs-18e64.firebasestorage.app',
-    )
-  );
+  // await FlutterBackground.initialize();
+  if(Platform.isAndroid) {
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: 'AIzaSyDv6xzA3diMrfClAPxRMZxJv6KGIaHpGDc',
+          appId: '1:507730239963:android:1d705bd25ab916291a47fe',
+          messagingSenderId: '507730239963',
+          projectId: 'lineblocs-18e64',
+          storageBucket: 'lineblocs-18e64.firebasestorage.app',
+        )
+    );
+  }else{
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: 'AIzaSyBjKRH5OoYMq77xddzazkLFcfYwk_e7sWo',
+          appId: '1:507730239963:ios:b5393e95882f1d721a47fe',
+          messagingSenderId: '507730239963',
+          projectId: 'lineblocs-18e64',
+          storageBucket: 'lineblocs-18e64.firebasestorage.app',
+        )
+    );
+  }
+
   if (WebRTC.platformIsDesktop) {
     debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   }
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
-  const InitializationSettings initializationSettings =
-  InitializationSettings(android: initializationSettingsAndroid);
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+  final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings();
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsDarwin,
+  );
+
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
   final ThemeController themeController = Get.put(ThemeController());
   runApp(MyApp());
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
