@@ -1,8 +1,12 @@
+// To parse this JSON data, do
+//
+//     final callRecordingsModel = callRecordingsModelFromJson(jsonString);
+
 import 'dart:convert';
 
-CallRecordingsModel callRecoderModelFromJson(String str) => CallRecordingsModel.fromJson(json.decode(str));
+CallRecordingsModel callRecordingsModelFromJson(String str) => CallRecordingsModel.fromJson(json.decode(str));
 
-String callRecoderModelToJson(CallRecordingsModel data) => json.encode(data.toJson());
+String callRecordingsModelToJson(CallRecordingsModel data) => json.encode(data.toJson());
 
 class CallRecordingsModel {
   int? id;
@@ -90,7 +94,7 @@ class CallRecordingsModel {
     durationLiveHuman: json["duration_live_human"],
     durationEnded: json["duration_ended"],
     durationEndedHuman: json["duration_ended_human"],
-    recordings: json["recordings"] == null ? [] : List<Recording>.from(json["recordings"]!.map((x) => x)),
+    recordings: json["recordings"] == null ? [] : List<Recording>.from(json["recordings"]!.map((x) => Recording.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -120,7 +124,7 @@ class CallRecordingsModel {
     "duration_live_human": durationLiveHuman,
     "duration_ended": durationEnded,
     "duration_ended_human": durationEndedHuman,
-    "recordings": recordings == null ? [] : List<dynamic>.from(recordings!.map((x) => x)),
+    "recordings": recordings == null ? [] : List<dynamic>.from(recordings!.map((x) => x.toJson())),
   };
 }
 

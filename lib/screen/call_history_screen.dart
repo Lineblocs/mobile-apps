@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lineblocs/widget/comman_widget.dart';
+import 'package:sip_ua/sip_ua.dart';
 
 import '../controller/dashboard_controller.dart';
 import '../controller/theme_controller.dart';
@@ -10,6 +11,9 @@ import '../utils/app_string.dart';
 import 'call_history_details_screen.dart';
 
 class CallHistoryScreen extends StatefulWidget {
+  final SIPUAHelper? _helper;
+
+  CallHistoryScreen(this._helper, {Key? key}) : super(key: key);
   @override
   State<CallHistoryScreen> createState() => _CallHistoryScreenState();
 }
@@ -51,6 +55,7 @@ class _CallHistoryScreenState extends State<CallHistoryScreen> {
                       onTap: () {
                         Get.to(CallHistoryDetailsScreen(
                           callHistory: callHistory,
+                          helper: widget._helper,
                         ));
                       },
                       child: Container(

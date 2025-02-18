@@ -317,6 +317,7 @@ class DialPadScreen extends StatefulWidget {
 class _DialPadScreenState extends State<DialPadScreen>
     implements SipUaHelperListener {
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode(); // Added FocusNode
   ThemeController themeController = Get.find();
   DashboardController controller = Get.find();
@@ -412,6 +413,7 @@ class _DialPadScreenState extends State<DialPadScreen>
       _controller.text += value;
       _focusNode.requestFocus(); // Keep the cursor active
     });
+    _scrollToEnd();
   }
 
   void _onRemove() {
@@ -419,8 +421,19 @@ class _DialPadScreenState extends State<DialPadScreen>
       if (_controller.text.isNotEmpty) {
         _controller.text =
             _controller.text.substring(0, _controller.text.length - 1);
-        _focusNode.requestFocus(); // Keep the cursor active
+        _focusNode.requestFocus();
+        _scrollToEnd();// Keep the cursor active
       }
+    });
+  }
+
+  void _scrollToEnd() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
     });
   }
 
@@ -501,29 +514,29 @@ class _DialPadScreenState extends State<DialPadScreen>
                   ),
                 ),),
                 SizedBox(height: 3.w),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                SizedBox(
+                  width: 90.w,
+                  height: 14.5.w,
                   child: TextField(
+                    scrollController: _scrollController,
                     controller: _controller,
                     focusNode: _focusNode,
+                    maxLength: 20,
+                    maxLines: 1,
                     readOnly: true,
-                    showCursor: _controller.text.isNotEmpty,
-                    cursorColor: themeController.isDarkMode.value
-                        ? AppColor.white
-                        : AppColor.primaryColor,
+                    cursorColor: themeController.isDarkMode.value ? AppColor.white : AppColor.primaryColor,
                     textAlign: TextAlign.center,
-                    style: AppFonts.boldTextStyle(
-                      fontSize: 8.w,
-                    ),
-                    decoration: InputDecoration(
+                    style: AppFonts.boldTextStyle(fontSize: 10.w),
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
+                      counterText: '',
                     ),
                   ),
                 ),
                 Container(
                   child: GridView.builder(
                     shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       childAspectRatio: 1.5,
                     ),
@@ -545,14 +558,16 @@ class _DialPadScreenState extends State<DialPadScreen>
                       return InkWell(
                         onTap: () {
                           if (_registerState.state?.name == "REGISTERED") {
-                            _onPressed(value);
-                            _audioPlayer.play(AssetSource('sounds/tick.mp3'),volume: 0.3);
+                            if(_controller.text.length < 20) {
+                              _onPressed(value);
+                              _audioPlayer.play(AssetSource('sounds/tick.mp3'), volume: 0.3);
+                            }
                           } else {
-                            ShowAppMessage.showMessage(
-                              "Please retry connection.",
-                              true,
-                              snackBarType: SnackBarType.error,
-                            );
+                            // ShowAppMessage.showMessage(
+                            //   "Please retry connection.",
+                            //   true,
+                            //   snackBarType: SnackBarType.error,
+                            // );
                           }
                         },
                         child: Column(
@@ -606,6 +621,7 @@ class _DialPadScreenState extends State<DialPadScreen>
                         InkWell(
                           onTap: () {
                             if (_registerState.state?.name == "REGISTERED") {
+                              _audioPlayer.play(AssetSource('sounds/tick.mp3'), volume: 0.3);
                               _handleCall(context);
                             } else {
                               // ShowAppMessage.showMessage(

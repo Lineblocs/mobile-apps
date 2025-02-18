@@ -35,7 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       DialPadScreen(widget._helper),
       SettingScreen(),
       ContactListScreen(),
-      CallHistoryScreen(),
+      CallHistoryScreen(widget._helper),
       ProfileScreen()
     ];
   }

@@ -1,19 +1,28 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:proximity_screen_lock/proximity_screen_lock.dart';
+import 'package:sip_ua/sip_ua.dart';
 import 'package:sizer/sizer.dart';
-
+import 'package:flutter_webrtc/flutter_webrtc.dart' as webrtc;
 import '../controller/dashboard_controller.dart';
 import '../controller/theme_controller.dart';
 import '../model/call_history_model.dart';
+import '../service/show_app_message.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_font.dart';
 import '../utils/app_string.dart';
 import '../widget/comman_widget.dart';
+import 'callscreen.dart';
 import 'contact_details_screen.dart';
 
 class CallHistoryDetailsScreen extends StatefulWidget {
-  CallHistoryDetailsScreen({super.key, required this.callHistory});
+
+  final SIPUAHelper? helper;
+  CallHistoryDetailsScreen({super.key, required this.callHistory,this.helper});
 
   CallHistory callHistory;
 
@@ -22,13 +31,16 @@ class CallHistoryDetailsScreen extends StatefulWidget {
       _CallHistoryDetailsScreenState();
 }
 
-class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
+class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen>  implements SipUaHelperListener {
   final noteController = TextEditingController();
   DashboardController controller = Get.find();
   final AudioPlayer audioPlayer = AudioPlayer();
   Duration _totalDuration = Duration.zero;
   Duration _currentDuration = Duration.zero;
   bool isPlaying = false;
+  SIPUAHelper? get helper => widget.helper;
+  late RegistrationState _registerState;
+
 
   @override
   void initState() {
@@ -54,6 +66,54 @@ class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
         }
       });
     });
+    _registerState = helper!.registerState;
+    helper!.addSipUaHelperListener(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getGetSipCredentials(context).then((value) {
+        handleSave(context);
+      });
+    });
+  }
+
+
+  void handleSave(BuildContext context) {
+    if (controller.sipCredentials.value.websocketEndpoint == '') {
+
+    } else if (controller.sipCredentials.value.sipUri == '') {
+
+    }
+    UaSettings settings = UaSettings();
+
+    settings.port = controller.sipCredentials.value.port;
+    settings.webSocketSettings.extraHeaders = {
+      'Origin': 'https:// ${Uri.parse(controller.sipCredentials.value.websocketEndpoint?? "").host}',
+      'Host': Uri.parse(controller.sipCredentials.value.websocketEndpoint?? "").host
+    };
+    settings.webSocketSettings.allowBadCertificate = true;
+    print('AllowBadCertificate: ${settings.webSocketSettings.allowBadCertificate}');
+    settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
+    settings.tcpSocketSettings.allowBadCertificate = true;
+    settings.transportType = TransportType.WS;
+    print('TransportType: ${settings.transportType}');
+    settings.uri = controller.sipCredentials.value.sipUri;
+    print('URI: ${settings.uri}');
+    settings.webSocketUrl = controller.sipCredentials.value.websocketEndpoint;
+    print('WebSocketUrl: ${settings.webSocketUrl}');
+    settings.host = controller.sipCredentials.value.host;
+    print('Host: ${settings.host}');
+    settings.authorizationUser = controller.sipCredentials.value.username;
+    print('AuthorizationUser: ${settings.authorizationUser}');
+    settings.password = controller.sipCredentials.value.secret;
+    print('Password: ${settings.password}');
+    settings.displayName = controller.sipCredentials.value.displayName;
+    print('DisplayName: ${settings.displayName}');
+    settings.userAgent = 'Dart SIP Client v1.0.0';
+    print('UserAgent: ${settings.userAgent}');
+    settings.dtmfMode = DtmfMode.RFC2833;
+    print('DtmfMode: ${settings.dtmfMode}');
+    settings.contact_uri = 'sip:${settings.authorizationUser}@${settings.host}';
+    print('ContactUri: ${settings.contact_uri}');
+    helper!.start(settings);
   }
 
   @override
@@ -138,8 +198,13 @@ class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          actionButton(
-                              Icons.call, AppString().strCall, AppColor.green),
+                          InkWell(
+                            onTap: () {
+                             _handleCall(context, true);
+                            },
+                            child: actionButton(
+                                Icons.call, AppString().strCall, AppColor.green),
+                          ),
                         ],
                       ),
                     ),
@@ -174,7 +239,8 @@ class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
                           ? ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: 5,
+                              itemCount: controller
+                                  .callHistoryDetails.value.recordings!.length,
                               itemBuilder: (context, index) {
                                 return Card(
                                   child: Padding(
@@ -330,5 +396,109 @@ class _CallHistoryDetailsScreenState extends State<CallHistoryDetailsScreen> {
         ),
       ),
     );
+  }
+
+  Future<Widget?> _handleCall(BuildContext context,
+      [bool voiceOnly = false]) async {
+    print('Starting call ${widget.callHistory.callFrom}');
+    final dest = widget.callHistory.callFrom;
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      await Permission.microphone.request();
+      await Permission.camera.request();
+    }
+
+    var mediaConstraints = <String, dynamic>{
+      'audio': true,
+      'video': {
+        'mandatory': <String, dynamic>{
+          'minWidth': '640',
+          'minHeight': '480',
+          'minFrameRate': '30',
+        },
+        'facingMode': 'user',
+      }
+    };
+
+    webrtc.MediaStream mediaStream;
+
+    try {
+      mediaStream =
+      await webrtc.navigator.mediaDevices.getUserMedia(mediaConstraints);
+    } catch (e) {
+      print('getUserMedia() failed: $e');
+      return null;
+    }
+
+    // Add logging to track the call status
+    print('Starting call with destination: $dest');
+    helper!
+        .call(dest!, voiceOnly: voiceOnly, mediaStream: mediaStream)
+        .then((_) {
+      print('Call started successfully');
+      mediaStream.getAudioTracks().forEach((track) {
+        track.onEnded = () {
+          print('Audio track ended');
+        };
+      });
+    }).catchError((error) {
+      print('Call failed: $error');
+    });
+
+    // Ensure the MediaStream is not being closed or garbage collected
+    // _keepMediaStreamAlive(mediaStream);
+    ProximityScreenLock.setActive(true);
+    // _preferences.setString('dest', dest);
+    return null;
+  }
+
+  @override
+  void callStateChanged(Call call, CallState state) {
+    print('Call state changed to: ${state.state}');
+    if (state.state == CallStateEnum.CALL_INITIATION) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CallScreenWidget(helper!, call),
+        ),
+      );
+    }
+  }
+
+  @override
+  void onNewMessage(SIPMessageRequest msg) {
+    // TODO: implement onNewMessage
+  }
+
+  @override
+  void onNewNotify(Notify ntf) {
+    // TODO: implement onNewNotify
+  }
+
+  @override
+  void onNewReinvite(ReInvite event) {
+    // TODO: implement onNewReinvite
+  }
+
+  @override
+  void registrationStateChanged(RegistrationState state) {
+    print('Registration state changed to: ${state.state}');
+    setState(() {
+      _registerState = state;
+    });
+  }
+
+  @override
+  void transportStateChanged(TransportState state) {
+    // TODO: implement transportStateChanged
+  }
+
+
+  @override
+  deactivate() {
+    super.deactivate();
+    // textController.text;
+    helper!.removeSipUaHelperListener(this);
+
   }
 }

@@ -18,6 +18,8 @@ import 'package:sizer/sizer.dart';
 
 import 'controller/theme_controller.dart';
 
+/// SDK version 3.24.2 and dart version 3.5.2
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await FlutterBackground.initialize();
