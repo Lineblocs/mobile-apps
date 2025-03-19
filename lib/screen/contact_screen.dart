@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:lineblocs/utils/app_string.dart';
@@ -59,24 +58,24 @@ class _ContactListScreenState extends State<ContactListScreen> {
           style: AppFonts.boldTextStyle(fontSize: 20.0, color: AppColor.white),
         ),
         actions: [
-          IconButton(
-              onPressed: _fetchContacts,
-              icon: const Icon(
-                Icons.refresh,
-                color: AppColor.white,
-              )),
+          // IconButton(
+          //     onPressed: _fetchContacts,
+          //     icon: const Icon(
+          //       Icons.refresh,
+          //       color: AppColor.white,
+          //     )),
           IconButton(
               onPressed: () {},
               icon: const Icon(
                 Icons.search,
                 color: AppColor.white,
               )),
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.more_vert,
-                color: AppColor.white,
-              )),
+          // IconButton(
+          //     onPressed: () {},
+          //     icon: const Icon(
+          //       Icons.more_vert,
+          //       color: AppColor.white,
+          //     )),
         ],
       ),
       body: _permissionDenied

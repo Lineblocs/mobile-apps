@@ -8,7 +8,6 @@ import '../utils/app_colors.dart';
 import '../utils/app_string.dart';
 
 class ContatctDetailsScreen extends StatelessWidget {
-
   final String userName;
   final List<String> phoneNumbers;
 
@@ -20,12 +19,14 @@ class ContatctDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeController  themeController = Get.find();
+    final ThemeController themeController = Get.find();
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: themeController.isDarkMode.value ? null :AppColor.primaryColor,
+          backgroundColor:
+              themeController.isDarkMode.value ? null : AppColor.primaryColor,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back,
+            icon: const Icon(
+              Icons.arrow_back,
               color: Colors.white,
             ),
             onPressed: () => Navigator.of(context).pop(),
@@ -34,29 +35,31 @@ class ContatctDetailsScreen extends StatelessWidget {
           title: Text(
             AppString().strContactDetails,
             style:
-                AppFonts.boldTextStyle(fontSize: 20.0,
-                    color: AppColor.white
-                ),
+                AppFonts.boldTextStyle(fontSize: 20.0, color: AppColor.white),
           )),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
             children: [
-               SizedBox(height: 10.w),
+              SizedBox(height: 10.w),
               // Profile Section
               CircleAvatar(
                   radius: 50,
-                  backgroundColor:  themeController.isDarkMode.value ? null :AppColor.primaryColor,
-                  child: const Icon(Icons.person, size: 60,
+                  backgroundColor: themeController.isDarkMode.value
+                      ? null
+                      : AppColor.primaryColor,
+                  child: const Icon(
+                    Icons.person,
+                    size: 60,
                     color: Colors.white,
-                    )),
-               SizedBox(height: 10.w),
+                  )),
+              SizedBox(height: 10.w),
               Text(userName,
                   style: AppFonts.boldTextStyle(
-                    fontSize: 25.0,
-                      color:  themeController.isDarkMode.value ? null :AppColor.primaryColor
-                  )
-              ),
+                      fontSize: 25.0,
+                      color: themeController.isDarkMode.value
+                          ? null
+                          : AppColor.primaryColor)),
               SizedBox(height: 10.w),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -64,9 +67,10 @@ class ContatctDetailsScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    actionButton(Icons.call, AppString().strCall,AppColor.green),
-                    actionButton(Icons.message, AppString().strText,AppColor.yellow4),
-                    actionButton(Icons.video_call, AppString().strVideo,AppColor.blue),
+                    actionButton(
+                        Icons.call, AppString().strCall, AppColor.green),
+                    // actionButton(Icons.message, AppString().strText,AppColor.yellow4),
+                    // actionButton(Icons.video_call, AppString().strVideo,AppColor.blue),
                     //  actionButton(Icons.location_on, "Location"),
                   ],
                 ),
@@ -75,10 +79,12 @@ class ContatctDetailsScreen extends StatelessWidget {
               sectionTitle(AppString().strPhoneNumbers),
               ...phoneNumbers.map((number) => ListTile(
                     leading: const Icon(Icons.phone),
-                    title: Text(number,style: AppFonts.mediumTextStyle(
-                        fontSize: 15.0,
-                        color: themeController.isDarkMode.value ? AppColor.white :AppColor.primaryColor
-                    )),
+                    title: Text(number,
+                        style: AppFonts.mediumTextStyle(
+                            fontSize: 15.0,
+                            color: themeController.isDarkMode.value
+                                ? AppColor.white
+                                : AppColor.primaryColor)),
                     onTap: () => print("Tapped $number"), // Example action
                   )),
               const SizedBox(height: 20),
@@ -102,15 +108,20 @@ class ContatctDetailsScreen extends StatelessWidget {
 }
 
 // Action Button Widget (Fixed Row)
-Widget actionButton(IconData icon, String label,Color color) {
+Widget actionButton(IconData icon, String label, Color color) {
   return Column(
     children: [
-      Icon(icon, size: 35,color: color,),
+      Icon(
+        icon,
+        size: 35,
+        color: color,
+      ),
       const SizedBox(height: 5),
-      Text(label,style: AppFonts.mediumTextStyle(
-          fontSize: 15.0,
-         // color: AppColor.primaryColor
-      )),
+      Text(label,
+          style: AppFonts.mediumTextStyle(
+            fontSize: 15.0,
+            // color: AppColor.primaryColor
+          )),
     ],
   );
 }
@@ -123,8 +134,8 @@ Widget sectionTitle(String title) {
       alignment: Alignment.centerLeft,
       child: Text(title,
           style: AppFonts.boldTextStyle(
-              fontSize: 20.0,
-               // color: AppColor.primaryColor
+            fontSize: 20.0,
+            // color: AppColor.primaryColor
           )),
     ),
   );
